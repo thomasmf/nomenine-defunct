@@ -1,12 +1,12 @@
 
 fun (: 'recgen' [
-  ( throw ( that ) .)
-  that > 0 then [ recgen ( that - 1 ) ]
+  ( that -- throw .)
+  that > 0 then [ recgen ( that ) ]
 ] )
 
-fun (: 'recprint' [
+fun (: 'recprint' ( iterator ) [
   that next delog then [ recprint ( that ) ]
 ] )
 
-( recprint ( generator (: ( number ) [ recgen 5 ] ) each ) .)
+( recprint ( generator (: ( number ) [ recgen 10 ] ) each ) .)
 
