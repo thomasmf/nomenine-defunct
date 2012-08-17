@@ -1,0 +1,66 @@
+
+fun (: 'print-all' ( set ) [
+  ( 'print-all' delog .)
+  const (: 'elements' ( that each ) )
+  loop [
+    elements next else [ return ( none ) ] delog
+  ]
+  that
+] )
+
+fun (: 'until-ceiling' ( class [ none param (: 'max' ( number ) 0 ) param (: 'the-set' ( set ) ) ] ) [
+  generator (: ( number ) [
+    const (: 'elements' ( that the-set each ) )
+    loop [
+      ( that max >= ( elements next else [ stop ] ) else [ stop ] .)
+      ( elements value throw .)
+    ]
+  ] )
+] )
+
+fun (: 'dividable' ( class [ none param (: 'n' ( number ) 0 ) param (: 'the-set' ( set ) ) ] ) [
+  const (: 'elements' ( that the-set each ) )
+  loop [
+    ( that n mod ( elements next else [ stop ] ) == 0 then [ return ( elements value ) ] .)
+  ]
+  none
+] )
+
+const (: 'primes-set' (
+  generator (: ( number ) [
+    const (: 'known-primes' ( list ( number ) ) )
+    var (: 'i' 1 )
+    loop [
+      ( i ( i + 1 !) .)
+      ( dividable (: ( i ) ( until-ceiling (: ( i sqrt ) ( known-primes ) ) ) ) else [
+        ( known-primes ( i ) .)
+        ( i throw .)
+      ] .)
+    ]
+  ] )
+) )
+
+fun (: 'primes-ceiling-set' ( number ) [
+  generator (: ( number ) [
+    const (: 'known-primes' ( list ( number ) ) )
+    var (: 'i' 1 )
+    loop [
+      ( i ( i + 1 !) < ( that sqrt ) else [ stop ] .)
+      ( dividable (: ( i ) ( until-ceiling (: ( i sqrt ) ( known-primes ) ) ) ) else [
+        ( known-primes ( i ) .)
+        ( i throw .)
+      ] .)
+    ]
+    loop [
+      ( i ( i + 1 !) < ( that ) else [ stop ] .)
+      ( dividable (: ( i ) ( until-ceiling (: ( i sqrt ) ( known-primes ) ) ) ) else [
+        ( i throw .)
+      ] .)
+    ]
+  ] )
+] )
+
+( print-all ( until-ceiling (: 100 ( primes-set ) ) ) .)
+
+( print-all ( primes-ceiling-set 100 ) .)
+
