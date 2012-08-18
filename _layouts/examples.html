@@ -7,27 +7,21 @@
 
   <div id="page">
 
-    <div class="row">
-      <div class="span11 offset1">
+    {% include top-bar.html-fragment %}
 
-        {% include top-bar.html-fragment %}
-
-        <div class="subnav">
-              <ul class="nav nav-pills">
-                <li {% if page.url contains 'hello-world' %} class="active" {% endif %} ><a href="/documentation/examples/hello-world.html">Hello World</a></li>
-                <li {% if page.url contains 'sort' %} class="active" {% endif %} ><a href="/documentation/examples/sort.html">Sort</a></li>
-                <li {% if page.url contains 'user-class' %} class="active" {% endif %} ><a href="/documentation/examples/user-class.html">User Class</a></li>
-                <li {% if page.url contains 'primes' %} class="active" {% endif %} ><a href="/documentation/examples/primes.html">Primes</a></li>
-                <li {% if page.url contains 'fibonacci' %} class="active" {% endif %} ><a href="/documentation/examples/fibonacci.html">Fibonacci</a></li>
-              </ul>
-        </div>
-
-        {{ content }}
-
-        {% include signature.html-fragment %}
-
-      </div>
+    <div class="subnav">
+      <ul class="nav nav-pills">
+        <li {% if page.url contains 'hello-world' %} class="active" {% endif %} ><a href="/documentation/examples/hello-world.html">Hello World</a></li>
+        <li {% if page.url contains 'sort' %} class="active" {% endif %} ><a href="/documentation/examples/sort.html">Sort</a></li>
+        <li {% if page.url contains 'user-class' %} class="active" {% endif %} ><a href="/documentation/examples/user-class.html">User Class</a></li>
+        <li {% if page.url contains 'primes' %} class="active" {% endif %} ><a href="/documentation/examples/primes.html">Primes</a></li>
+        <li {% if page.url contains 'fibonacci' %} class="active" {% endif %} ><a href="/documentation/examples/fibonacci.html">Fibonacci</a></li>
+      </ul>
     </div>
+
+    {{ content }}
+
+    {% include signature.html-fragment %}
 
   </div>
 
