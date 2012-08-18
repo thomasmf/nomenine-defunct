@@ -1,0 +1,19 @@
+
+html {
+  overflow-y: scroll ;
+  overflow-x: auto ;
+}
+
+body {
+  margin: 0 ;
+  padding: 0 ;
+  text-align: center ;
+}
+
+#page {
+  width: 800px ;
+  text-align: left ;
+  padding: 0 ;
+  margin: 0 auto ;
+}
+

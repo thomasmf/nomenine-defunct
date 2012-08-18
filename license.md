@@ -2,6 +2,9 @@
 layout: default
 ---
 
+License
+=======
+
 The Nominine programming language, its source code as well as the information on this site is released under the license
 commonly referred to as the *MIT License*.
 
