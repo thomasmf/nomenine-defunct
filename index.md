@@ -27,7 +27,7 @@ Here is an example of what source code looks like:
 
         ] )
 
-This defines a function 'sort' which can be used to sort a list:
+This defines a function **sort** which can be used to sort a list:
 
         sort [ 5 4 2 3 1 ]
 

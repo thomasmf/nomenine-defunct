@@ -5,31 +5,31 @@ layout: examples
 Fibonacci
 ---------
 
-The following example defines 'fib-set' which is the set of all Fibonacci numbers.
+The following example defines **fib-set** which is the set of all Fibonacci numbers.
 It is a generator, aka. lazy list.
-'fib-set' uses an endless loop to generate the numbers.
+**fib-set** uses an endless loop to generate the numbers.
 
-Due to limitations on number instances, 'fib-set' will start producing non-Fibonacci numbers after a certain
-number of iterations. I am just assuming this. I have not checked it. The example below, handles this using 'ceiling'.
+Due to limitations on number instances, **fib-set** will start producing non-Fibonacci numbers after a certain
+number of iterations. I am just assuming this. I have not checked it. The example below, handles this using **ceiling**.
 The natural way to handle this would be to put a limit into the generator itself,
-but 'number' objects are not supposed to be limited. 'fib-set' is correct and the 'number' class will be
+but number objects are not supposed to be limited. **fib-set** is correct and the number class will be
 extended to handle arbitrary precision and size of numbers in the future.
 
-There is also, as an alternative, a recursive function, 'fib-rec', that calculates the n'th Fibonacci number.
+There is also, as an alternative, a recursive function, **fib-rec**, that calculates the n'th Fibonacci number.
 This is very slow. The mechanism does not store already calculated numbers.
 
 In addition to these two implementations of Fibonacci numbers, there are tools for dealing with sets and functions.
 
-'print-all' outputs elements of a set.
+**print-all** outputs elements of a set.
 
-'range' produces a set of numbers within a range. The set is a generator.
+**range** produces a set of numbers within a range. The set is a generator.
 
-'getn' produce a generator that passes through a number of elements from a set. Notice that generators play well with closures.
+**getn** produce a generator that passes through a number of elements from a set. Notice that generators play well with closures.
 
-'ceiling' ignore numbers above a threshold.
+**ceiling** ignore numbers above a threshold.
 
-'filter' produce a set where the elements are produced by calling a function with elements from a set.
-This is like "map" only that the application of the function on the set is not carried out until elements are requested.
+**filter** produce a set where the elements are produced by calling a function with elements from a set.
+This is like **map** only that the application of the function on the set is not carried out until elements are requested.
 It can be used for infinite lists.
 
 These tools are written to work with the example and may fail under other conditions.
@@ -112,7 +112,7 @@ All these generator factories have similar structure.
 This can be captured using meta programming, ie. building expressions dynamically.
 Currently there is a constructor deficiency, so this cannot be done properly.
 
-Notice the use of 'else' in 'fib-rec'. It acts as a logical *or* rather then a conditional branch.
+Notice the use of **else** in **fib-rec**. It acts as a logical *or* rather then a conditional branch.
 
 The result of running this program:
 
@@ -201,8 +201,8 @@ The result of running this program:
         ::::			[137:NUMBER 610.000000]
         0000	r->value	[636:CLOSURE]
 
-Notice how 'first-100' is *not* calculated when it is defined.
-This set is a generator and it is generated every time it is used. This also goes for sets produced by 'filter'.
+Notice how **first-100** is *not* calculated when it is defined.
+This set is a generator and it is generated every time it is used. This also goes for sets produced by **filter**.
 To convert a generator into a list, simply merge it to a list like this:
 
         ( [] merge ( first-100 ) )

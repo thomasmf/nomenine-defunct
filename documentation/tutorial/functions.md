@@ -13,7 +13,7 @@ Nominine provide functions and methods in the same way that OOPs like Python and
 Simple functions
 ----------------
 
-The following defines the function 'square':
+The following defines the function **square**:
 
         fun (: 'square' ( number ) [
           that * ( that )
@@ -35,9 +35,9 @@ The following defines a method on a number:
           ] )
         ] ) )
 
-Notice the use of 'is 0'. This makes the new class a subclass of 'number' by *being* an instance of the built-in 'number' type.
-The new number type is interchangeable with other numbers, even for built-in functionality. However, operations on 'number'
-instances that return new instances of 'number', will produce simple number instances without the 'max' method.
+Notice the use of `is 0`. This makes the new class a subclass of **number** by *being* an instance of the built-in **number** type.
+The new number type is interchangeable with other numbers, even for built-in functionality. However, operations on **number**
+instances that return new instances of **number**, will produce simple number instances without the **max** method.
 
 To use this write something like:
 
@@ -45,13 +45,13 @@ To use this write something like:
 
         ( a-number max 20 )
 
-This declares a variable named 'a-number' which is an instance of the other-number class. Then the 'max' method is used.
+This declares a variable named **a-number** which is an instance of the other-number class. Then the **max** method is used.
 
 
 First order functions
 ---------------------
 
-'function' is the function class. It is a normal class and it has a constructor that takes two parameters.
+**function** is the function class. It is a normal class and it is a constructor that takes two parameters.
 
 The following will return 25:
 
@@ -76,17 +76,17 @@ its parameters and return type when using it as a parameter.
 Apply
 -----
 
-Functions can be connected to an object, which will be called 'this'. When using a method on an object,
-this connection is done implicitly. Function objects have an 'apply' method that can be used to
+Functions can be connected to an object, which will be called **this**. When using a method on an object,
+this connection is done implicitly. Function objects have an **apply** method that can be used to
 explicitly connect an object to a function.
 
-Notice that named functions and object methods are created on invocation, so 'apply' does not change 'this'
+Notice that named functions and object methods are created on invocation, so **apply** does not change **this**
 for further usages of that function or method by name.
 
-'this' as used by functions defined in a local scope, is that scope object.
+**this** as used by functions defined in a local scope, is that scope object.
 
-As a rule, 'apply' only work for first order functions. The following statement will create a function
-using 'var' and 'function' and then reassign 'this' to 'some-object'.
+As a rule, **apply** only work for first order functions. The following statement will create a function
+using **var** and **function** and then reassign **this** to **some-object**.
 
         var (: 'f' ( function (: ( any ) [ ... ] ) ) )
 

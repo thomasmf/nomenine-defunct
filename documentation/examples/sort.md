@@ -41,34 +41,34 @@ This is an implementation of the quick-sort sorting algorithm.
         ( 'Sorted list' delog .)
         ( print-all( sort( l ) ) .)
 
-'print-all' iterates through a set printing all elements.
+**print-all** iterates through a set printing all elements.
 
-'sort' does the sorting. It takes a set as a parameter.
+**sort** does the sorting. It takes a set as a parameter.
 
-'elements' is the 'iterator'. Every time a new element is needed, 'elements next' is used. The last element is 'none'.
+**elements** is the iterator. Every time a new element is needed, `elements next` is used. The last element is **none**.
 
 The pivot is the first element in the list. This is a bad choice, particularly for already sorted lists, but Nominine
 does not have random access to lists yet, so this will have to do.
 
-'low' and 'high' are lists to contain the elements lower than and higher than the pivot.
+**low** and **high** are lists to contain the elements lower than and higher than the pivot.
 
 The loop tests each element and puts them in the right list.
 
-Notice the 'else `[ stop ]`' after 'elements next'. This makes sure that the loop stops if there are no more elements.
-If the comparison, '>', is reached, we know that there is an element to compare.
+Notice the `else [ stop ]` after `elements next`. This makes sure that the loop stops if there are no more elements.
+If the comparison, **>**, is reached, we know that there is an element to compare.
 
-The last line of 'sort' first sort the 'low' list. This produces a sorted list.
-Then the pivot is appended to the list. This is done just by putting the pivot in the lists context.
-Lastly the 'high' list is sorted and merged to the final result.
+The last line of **sort** first sort the **low** list. This produces a sorted list.
+Then **pivot** is appended to the list.
+Lastly the **high** list is sorted and merged to the final result.
 The return is implicit, and the list resulting from all this sorting, appending and merging is returned.
 
-The lines following the definition of 'sort' defines 'l', a list, and sorts it.
-Both the sorted and unsorted list is printed using 'print-all'.
+The lines following the definition of **sort** defines **l**, a list, and sorts it.
+Both the sorted and unsorted list is printed using **print-all**.
 
-Notice that, since 'sort' takes a 'set' as its parameter, it can be used to sort numbers produced by generators.
-'sort' will, however, always return a list and *not* a generator.
+Notice that, since **sort** takes a set as its parameter, it can be used to sort numbers produced by generators as well as lists.
+**sort** will, however, always return a list and *not* a generator.
 
-Also notice that the parameter of 'sort' is unmodified.
+Also notice that the parameter of **sort** is unmodified.
 
 
 The output is similar to the following.

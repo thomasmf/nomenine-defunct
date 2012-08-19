@@ -10,24 +10,24 @@ This example calculates prime numbers.
 There are two implementations of the set of prime numbers.
 Both of which iterate over the natural numbers and test each number for divisibility.
 
-The first set is 'primes-set'. This is a generator that throw numbers that cannot be divided.
+The first implementation is **primes-set**. This is a generator that throw numbers that cannot be divided.
 It only tests for divisibility by numbers up to the square root of the number tested.
 However, it stores *all* primes found.
-The 'primes-set' is the set of all primes.
+The **primes-set** is the set of all primes.
 
-The second implementation is 'primes-ceiling-set'.
+The second implementation is **primes-ceiling-set**.
 This is a set factory that produces a generator that will only store known primes
 up to the square root of the maximum prime searched for.
-'primes-ceiling-set' takes the maximum number as a parameter and will stop when reaching it.
+**primes-ceiling-set** takes the maximum number as a parameter and will stop when reaching it.
 
 In addition to these two implementations of prime numbers, there are tools for dealing with sets.
 
-'print-all' outputs elements of a set.
+**print-all** outputs elements of a set.
 
-'dividable' checks if a number can be divided by any number in a set.
+**dividable** checks if a number can be divided by any number in a set.
 The number and set are parameters.
 
-'until-ceiling' throws onwards the elements in a set until it reaches an element that is higher then the given ceiling.
+**until-ceiling** throws onwards the elements in a set until it reaches an element that is higher then the given ceiling.
 
 
         fun (: 'print-all' ( set ) [

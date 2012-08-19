@@ -5,7 +5,7 @@ layout: examples
 Hello world
 -----------
 
-This is the basic "hello world" example.
+This is the *hello world* example.
 
         ( 'hello world' delog .)
 

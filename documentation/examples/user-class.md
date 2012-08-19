@@ -5,10 +5,10 @@ layout: examples
 User class
 ----------
 
-The following example implements a user defined class named 'vector'.
-The 'vector' class has two attributes 'x' and 'y' and a method named '+'.
+The following example implements a user defined class **vector**.
+Instances of **vector** has two attributes **x** and **y** and a method **+**.
 
-In addition to this, 'vector' also has a constructor that takes two parameters.
+In addition to this, **vector** also is constructor that takes two parameters.
 
 *Nominine currently lacks good mechanisms for defining user classes, so the techniques used here will be obsoleted in the future.*
 
@@ -42,7 +42,7 @@ and as a factory function to build new instances.
         ( v2 x delog .)
         ( v2 y delog .)
 
-Notice that the factory function starts with 'vector new'. This is bad.
+Notice that the factory function starts with `vector new`. This is bad.
 The coupling between the class and the function is loose at best.
 There are not many solid guarantees here.
 There will be much better ways to build user classes in the future.

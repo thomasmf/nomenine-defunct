@@ -65,7 +65,7 @@ In C syntax, an objective can be defined as a function with the following signat
 
 An objective observes and modifies its context, which is passed as the only argument.
 The returning of a result in the general model does not have the significance it has in a pure functional language.
-In the specific model, the concept of 'result' is used in the evaluation model.
+In the specific model **result** is used in the evaluation model.
 
 The context can be any object, but it is practical to have a more specific definition.
 In Nominine, context itself is contained in a task object.
@@ -118,8 +118,8 @@ following way
 
         ( ( a( b ) ) ( c ) )( d )
 
-Notice how the result of 'c' applied in the context of 'a b' creates the context where 'd' is applied.
-'d' is applied on the result of the preceding expression.
+Notice how the result of **c** applied in the context of `a b` creates the context where **d** is applied.
+**d** is applied on the result of the preceding expression.
 
 One can view an object as a data-structure when it sent from one context to another,
 but when it is used, it is treated like a function.
@@ -148,37 +148,37 @@ Start-contexts and sub-expressions
 
 *In Nominine, expressions are objects. When an object receives an expression, the object first evaluates the expression, then it sends the result to itself.*
 
-The following expression adds 'a' and 'b'.
+The following expression adds **a** and **b**.
 
         ( a + ( b ) )
 
 There are two expressions here. Each expression have an implicit object that starts the expression. This object is called
 the start-context. The start-context represent the current scope.
 
-Given the word 'a' in the beginning of the first expression, the start-context will return an object which is associated with
+Given the word **a** in the beginning of the first expression, the start-context will return an object which is associated with
 that word. In this case, the object is some number.
 
-'+' is also a word and it is associated with a method.
+**+** is also a word and it is associated with a method.
 
-Notice that the second expression is necessary because the method of 'a +' does not know about the other objects in scope.
+Notice that the second expression is necessary because the method `a +` does not know about the other objects in scope.
 The second expression also has a start-context. This start-context represent the same scope as the previous start-context.
-'b' is fetched from scope and 'a +' gets the result of the second expression as parameter.
+**b** is fetched from scope and `a +` gets the result of the second expression as parameter.
 
 Any start-context will return none-word objects.
 
         ( 1 + 2 )
 
-The number 1 received by the context is not a word object so it is returned and thereafter receives the '+' in the next step.
+The number 1 received by the context is not a word object so it is returned and thereafter receives the **+** in the next step.
 
 
 This and that
 -------------
 
-'this' and 'that' have special meaning.
+**this** and **that** have special meaning.
 
-'this' is the object operated on by a method. Also functions have 'this' defined.
+**this** is the object operated on by a method. Also functions have **this** defined.
 
-'that' is the parameter. When using methods, you have the following form:
+**that** is the parameter. When using methods, you have the following form:
 
         ( <this> <some-method-name> <that> )
 
@@ -219,15 +219,15 @@ An imperative is an expression which result is discarded.
 
         ( i += 1 .)
 
-Imperatives uses the '.' punctuation.
+Imperatives uses the **.** punctuation.
 
 Object context is often used with imperatives. This is similar to a code block or a "with"-statement.
 
         ( some-object ( some-method-1 ( some-parameter-1 ) .) ( some-method-2 ( some-parameter-2 ) .) )
 
-Both 'some-method-1' and 'some-method-2' are dispatched at 'some-object' because of object-context.
+Both **some-method-1** and **some-method-2** are dispatched at **some-object** because of object-context.
 
-The result of the main expression is 'some-object' because the sub-expressions are imperatives.
+The result of the main expression is **some-object** because the sub-expressions are imperatives.
 
 
 Briefly on parameters
@@ -239,19 +239,19 @@ There are ways to use the single parameter as multiple parameters, and I have ch
 pretty, but I expect is to fall more into place as the development of Nominine progresses.
 
 The gist of it is that multiple parameters are normal objects that uses a special attribute type for parameter attributes.
-Also, ':' is a 'function' property that is used to instantiate an instance of the parameter.
+Also, **:** is a **function** property that is used to instantiate an instance of the parameter.
 
-The following expression calls 'some-function' with the parameters 1, 2 and 3. This is similar to "some_function( 1, 2, 3 )" in C.
+The following expression calls **some-function** with the parameters 1, 2 and 3. This is similar to "some_function( 1, 2, 3 )" in C.
 
         ( some-function (: 1 2 3 ) .)
 
-The following code defines a function with two parameters, 'x' and 'y'. 
+The following code defines a function with two parameters, **x** and **y**. 
 
         fun (: 'average' ( class [ param (: 'x' ) param (: 'y' ) ] ) [
           that x + ( that y ) / 2
         ]
 
-To use 'average':
+To use **average**:
 
         ( average (: 10 20 ) )
 
@@ -265,7 +265,7 @@ It is used like this:
 
         ( square 5 )
 
-Notice that the parameter of 'average' is simply a fist order class. Nominine support both named parameters as well as parameters
+Notice that the parameter of **average** is simply a fist order class. Nominine support both named parameters as well as parameters
 with default values. More on parameters later.
 
 
@@ -277,7 +277,7 @@ are there and they can be useful for controlling certain aspects of code.
 
 It is also important to understand references to understand typing of set elements, variables and parameters.
 
-References are typed but they can have the type 'any'.
+References are typed but they can have the type **any**.
 
 *I have made a soft decision to avoid references to references. I hope to solve certain problems with other mechanisms in the future.*
 
@@ -285,13 +285,13 @@ A variable in scope is a reference.
 
         var (: 'a' ( number ) 45 )
 
-Numbers are mutable, but to make 'a' reference a completely different number object, one must use a noun phrase. Noun phrases
-are constructed using the '!' punctuation.
+Numbers are mutable, but to make **a** reference a completely different number object, one must use a noun phrase. Noun phrases
+are constructed using the **!** punctuation.
 
         ( a ( 55 !) .)
 
-Now, 'a' represent a different number object.
-The following statement will have no effect because 'a' is a number object and not a string.
+Now, **a** represent a different number object.
+The following statement will have no effect because **a** is a number object and not a string.
 
         ( a ( 'this is a string' !) .)
 
@@ -308,11 +308,11 @@ Error-handling
 
         ( a ( 'this is also a string' !) else [ some-error-object throw ] .)
 
-Nominine uses decisions on 'none' to detect failures. To handle errors in a manner similar to exceptions in other languages, one can
-use 'throw' and 'catch'.
+Nominine uses decisions on **none** to detect failures. To handle errors in a manner similar to exceptions in other languages, one can
+use **throw** and **catch**.
 
-Notice that 'throw' and 'catch' are resumable general mechanism used also to implement co-routines and similar features.
-To terminate execution, use 'exit'.
+Notice that **throw** and **catch** are resumable general mechanism used also to implement co-routines and similar features.
+To terminate execution, use **exit**.
 
 Built-ins, currently, does no throwing or other form of error handling.
 All failures silently result in nothing.
