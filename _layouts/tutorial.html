@@ -7,28 +7,22 @@
 
   <div id="page">
 
-    <div class="row">
-      <div class="span11 offset1">
+    {% include top-bar.html-fragment %}
 
-        {% include top-bar.html-fragment %}
-
-        <div class="subnav">
-              <ul class="nav nav-pills">
-                <li {% if page.url contains 'objectives' %} class="active" {% endif %} ><a href="/documentation/tutorial/objectives.html">Internals</a></li>
-                <li {% if page.url contains 'basics' %} class="active" {% endif %} ><a href="/documentation/tutorial/basics.html">Basics</a></li>
-                <li {% if page.url contains 'delog-and-trace' %} class="active" {% endif %} ><a href="/documentation/tutorial/delog-and-trace.html">Log/Trace</a></li>
-                <li {% if page.url contains 'control-structure' %} class="active" {% endif %} ><a href="/documentation/tutorial/control-structure.html">None/Else/Then/Loop</a></li>
-                <li {% if page.url contains 'functions' %} class="active" {% endif %} ><a href="/documentation/tutorial/functions.html">Functions</a></li>
-                <li {% if page.url contains 'sets-lists-and-generators' %} class="active" {% endif %} ><a href="/documentation/tutorial/sets-lists-and-generators.html">Set/List/Generator</a></li>
-              </ul>
-        </div>
-
-        {{ content }}
-
-        {% include signature.html-fragment %}
-
-      </div>
+    <div class="subnav">
+      <ul class="nav nav-pills">
+        <li {% if page.url contains 'objectives' %} class="active" {% endif %} ><a href="/documentation/tutorial/objectives.html">Internals</a></li>
+        <li {% if page.url contains 'basics' %} class="active" {% endif %} ><a href="/documentation/tutorial/basics.html">Basics</a></li>
+        <li {% if page.url contains 'delog-and-trace' %} class="active" {% endif %} ><a href="/documentation/tutorial/delog-and-trace.html">Log/Trace</a></li>
+        <li {% if page.url contains 'control-structure' %} class="active" {% endif %} ><a href="/documentation/tutorial/control-structure.html">None/Else/Then/Loop</a></li>
+        <li {% if page.url contains 'functions' %} class="active" {% endif %} ><a href="/documentation/tutorial/functions.html">Functions</a></li>
+        <li {% if page.url contains 'sets-lists-and-generators' %} class="active" {% endif %} ><a href="/documentation/tutorial/sets-lists-and-generators.html">Set/List/Generator</a></li>
+      </ul>
     </div>
+
+    {{ content }}
+
+    {% include signature.html-fragment %}
 
   </div>
 
