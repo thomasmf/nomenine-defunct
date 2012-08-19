@@ -54,7 +54,7 @@ does not have random access to lists yet, so this will have to do.
 
 The loop tests each element and puts them in the right list.
 
-Notice the 'else [ stop ]' after 'elements next'. This makes sure that the loop stops if there are no more elements.
+Notice the 'else `[ stop ]`' after 'elements next'. This makes sure that the loop stops if there are no more elements.
 If the comparison, '>', is reached, we know that there is an element to compare.
 
 The last line of 'sort' first sort the 'low' list. This produces a sorted list.
