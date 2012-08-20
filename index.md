@@ -2,8 +2,6 @@
 layout: default
 ---
 
-nominine
-========
 Nominine is a simple programming language.
 
 It is an object-oriented language with the addition of closures, lambdas and co-routines.
