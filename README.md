@@ -26,8 +26,8 @@ Goals
 The goal is to build a good programming language.
 I cannot give a more specific goal than that.
 
-When it comes to progamming languages,
-Nominine or something along thos lines,
+When it comes to programming languages,
+Nominine or something along those lines,
 is a good path to go down.
 That is my opinion and that is the path I am going.
 
@@ -42,7 +42,7 @@ It is not that I need it to look and sound very professional,
 but I hope to, over time, mold it into something that explains the different ideas in a simple and direct fashion.
 Currently it is mostly bits and pieces.
 
-I really appreaciate any feedback on this.
+I really appreciate any feedback on this.
 
 
 Example
