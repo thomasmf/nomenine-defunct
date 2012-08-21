@@ -3,7 +3,7 @@
   <link rel="shortcut icon" href="/favicon.ico"/>
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
   <link rel="stylesheet" type="text/css" href="/css/site.css"/>
-
+  <meta name="description" content="Nominine is an object oriented programming language with simple syntax and semantics, lazy lists, first order functions and closures."\>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];

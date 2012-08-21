@@ -6,6 +6,7 @@ layout: default
   <ul class="nav nav-pills">
     <li><a href="https://github.com/thomasmf/nominine/zipball/master">Download latest zip</a></li>
     <li><a href="https://github.com/thomasmf/nominine/tarball/master">Download latest tar.gz</a></li>
+    <li><a href="https://github.com/thomasmf/nominine/">Project page at github.com</a></li>
   </ul>
 </div>
 
