@@ -1,9 +1,9 @@
-  <meta charset="utf-8">
-  <title>nominine programming language</title>
-  <link rel="shortcut icon" href="/favicon.ico"/>
-  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
-  <link rel="stylesheet" type="text/css" href="/css/site.css"/>
-  <meta name="description" content="Nominine is an object oriented programming language with simple syntax and semantics, lazy lists, first order functions and closures."\>
+<title>nominine programming language</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+<meta name="description" content="Nominine is an object oriented programming language with simple syntax and semantics, lazy lists, first order functions and closures."/>
+<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="/css/site.css"/>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
