@@ -56,6 +56,9 @@ inline ANY assert_type( CLASS c, ANY o, n_integer l ) {
 }
 
 inline TASK REC( TASK task, CLASS class, REFERENCE this, REFERENCE action, TASK next ) {
+  if ( class->instance_objective == task->context->that->value->objective ) {
+    return RETA( task, action, this, refNEW( class, task->context->that->value ), task->exit ) ;
+  }
   REFERENCE r1 = ref(NONE) ;
   CONTEXT c1 = newCONTEXT( task->context->closure, task->context->that, ref(class->id) ) ;
   return newTASK( task->context->that, c1, r1, next,
