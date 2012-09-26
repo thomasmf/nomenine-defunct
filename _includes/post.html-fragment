@@ -1,0 +1,11 @@
+  <hr>
+  <div class="nom-post">
+    <div class="nom-post-header" >
+      <span class="nom-post-date" >{{ post.date | date:"%Y-%m-%d" }}</span>
+      <span class="nom-post-title" >{{ post.title }}</span>
+    </div>
+    <div>
+      {{ post.content }}
+    </div>
+  </div>
+

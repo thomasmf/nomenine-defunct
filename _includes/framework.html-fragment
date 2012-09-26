@@ -1,19 +1,7 @@
 <title>nominine programming language</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
-<meta name="description" content="Nominine is an object oriented programming language with simple syntax and semantics, lazy lists, first order functions and closures."/>
+<meta name="description" content="Nominine is an object oriented programming language with simple syntax and semantics, lazy lists, first order functions, dependent types and closures."/>
 <link rel="shortcut icon" href="/favicon.ico"/>
 <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
-<link rel="stylesheet" type="text/css" href="/css/site.css"/>
-<script type="text/javascript">
+<link rel="stylesheet" type="text/css" href="/css/nom.css"/>
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-34187561-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>

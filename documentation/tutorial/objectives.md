@@ -28,6 +28,7 @@ to define behavior as a set of methods, but in Nominine behavior is just this si
 
 Identity is also necessary, but that is a separate issue.
 
+<hr>
 
 General vs specific model
 -------------------------
@@ -51,6 +52,8 @@ in the development environment, can be added as easily as X and any supporting f
 
 I believe that the specific model follows from the general model. This is difficult to argue. The less scientific path is to give
 examples of how awesome the whole Nominine programming language is. I'm trying to do a little bit of both.
+
+<hr>
 
 Objectives
 ----------
@@ -87,6 +90,7 @@ The definition of the context is ( pseudo code ):
 
 To learn more there is always the source code.
 
+<hr>
 
 What does the objective do?
 ---------------------------
@@ -105,6 +109,7 @@ The objective may also have to delegate interpretation to other objectives.
 In the specific model, the objective always deals with these kind of interactions between object.
 Results are produced and sometimes there are effects.
 
+<hr>
 
 Syntax and semantics
 --------------------
@@ -142,6 +147,7 @@ Ultimately every object and class of objects can have their completely independe
 I am not going in that direction with Nominine.
 I am going for "predictable".
 
+<hr>
 
 Start-contexts and sub-expressions
 ----------------------------------
@@ -170,6 +176,7 @@ Any start-context will return none-word objects.
 
 The number 1 received by the context is not a word object so it is returned and thereafter receives the **+** in the next step.
 
+<hr>
 
 This and that
 -------------
@@ -194,6 +201,7 @@ Ultimately, everything is on the form:
 
         ( <this> <that> )
 
+<hr>
 
 Object-context
 --------------
@@ -211,6 +219,7 @@ Other objects will be treated the same way as in start-contexts, that is, they w
 In an object-context one can view the object as an extension of the scope.
 All the properties in the object, associated with words are available in the start-context.
 
+<hr>
 
 Imperatives
 -----------
@@ -229,17 +238,17 @@ Both **some-method-1** and **some-method-2** are dispatched at **some-object** b
 
 The result of the main expression is **some-object** because the sub-expressions are imperatives.
 
+<hr>
 
 Briefly on parameters
 ---------------------
 
 Nominine only uses single parameter functions/methods.
 
-There are ways to use the single parameter as multiple parameters, and I have chosen to use one such way. It is not directly
-pretty, but I expect is to fall more into place as the development of Nominine progresses.
-
-The gist of it is that multiple parameters are normal objects that uses a special attribute type for parameter attributes.
-Also, **:** is a **function** property that is used to instantiate an instance of the parameter.
+There are ways to use the single parameter as multiple parameters,
+and I have chosen to have **tuple** objects to pass multiple parameters.
+In addition to tuples, there is a mechanism available to the programmer as **struct** and **param**
+that turns a tuple into an object with named properties representing the elements in the **tuple**.
 
 The following expression calls **some-function** with the parameters 1, 2 and 3. This is similar to "some_function( 1, 2, 3 )" in C.
 
@@ -247,15 +256,19 @@ The following expression calls **some-function** with the parameters 1, 2 and 3.
 
 The following code defines a function with two parameters, **x** and **y**. 
 
-        fun (: 'average' ( class [ param (: 'x' ) param (: 'y' ) ] ) [
+        fun (: 'average' ( param (: (: 'x' ( number ) ) (: 'y' ( number ) ) ) ) [
           that x + ( that y ) / 2
-        ]
+        ] )
 
 To use **average**:
 
         ( average (: 10 20 ) )
 
 The result is 15.
+
+Notice that **param** takes as parameter a set of tuples of the form **string** and **type**.
+
+Notice also that tuples are sets, and sometimes it is convienient to use tuples as regular sets.
 
 As a comparison, the following is a single parameter function.
 
@@ -265,9 +278,7 @@ It is used like this:
 
         ( square 5 )
 
-Notice that the parameter of **average** is simply a fist order class. Nominine support both named parameters as well as parameters
-with default values. More on parameters later.
-
+<hr>
 
 References and noun-phrases
 ----------------------------
@@ -302,6 +313,7 @@ Usually numbers are exclusively "moved" using assigns, and never by reference.
 In Nominine, however, one has to deal with the difference between referencing and copying state ( assignment )
 also when it comes to numbers.
 
+<hr>
 
 Error-handling
 --------------
@@ -319,11 +331,13 @@ All failures silently result in nothing.
 
 In the future, when implementing I/O, there will be a logging stream, such as "stderr".
 
+<hr>
 
 Using objects as structs
 ------------------------
 
 *This is only an issue if doing modifications to the source code of the Nominine interpreter.*
+*This section uses the word "struct" to mean structs in C, not __struct__ types in Nominine.*
 
 In the core of Nominine it is necessary to make assumptions ( that hold ) about the type of an object, so that interaction
 between objects at the low level does not require invocation of objectives.
@@ -335,6 +349,7 @@ In other words, one sub-program may interact with the state of an object directl
 practice, this means treating that object as a simple struct. Prior to doing this, it is important to verify/determine the type of
 that object. To learn more about this, look at class id's and references in the source.
 
+<hr>
 
 Inheritance
 -----------

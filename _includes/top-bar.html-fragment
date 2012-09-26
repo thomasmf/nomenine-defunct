@@ -1,17 +1,19 @@
         <br>
 
-        <div class="navbar">
-          <div class="navbar-inner">
-            <div class="container">
-              <a class="brand" href="/index.html">nominine programming language</a>
-              <ul class="nav">
-                <li {% if page.url contains 'about' %} class="active" {% endif %} ><a href="/about.html">About</a></li>
-                <li {% if page.url contains 'tutorial' %} class="active" {% endif %} ><a href="/documentation/tutorial/index.html">Tutorial</a></li>
-                <li {% if page.url contains 'examples' %} class="active" {% endif %} ><a href="/documentation/examples/index.html">Examples</a></li>
-                <li {% if page.url contains 'quick-start' %} class="active" {% endif %} ><a href="/quick-start.html">Quick-start</a></li>
-                <li {% if page.url contains 'license' %} class="active" {% endif %} ><a href="/license.html">License</a></li>
-              </ul>
+          <div class="navbar navbar-inverse nom-shadowed">
+            <div class="navbar-inner">
+
+                <a class="brand" href="/index.html">Nominine</a>
+
+                <ul class="nav" >
+                  <li {% if page.url contains 'blog' %} class="active" {% endif %} ><a href="/blog.html">Blog</a></li>
+                  <li {% if page.url contains 'tutorial' %} class="active" {% endif %} ><a href="/documentation/tutorial/index.html">Tutorial</a></li>
+                  <li {% if page.url contains 'examples' %} class="active" {% endif %} ><a href="/documentation/examples/index.html">Examples</a></li>
+                  <li {% if page.url contains 'reference' %} class="active" {% endif %} ><a href="/documentation/reference/index.html">Reference</a></li>
+                  <li {% if page.url contains 'quick-start' %} class="active" {% endif %} ><a href="/quick-start.html">Quick-start</a></li>
+                  <li {% if page.url contains 'license' %} class="active" {% endif %} ><a href="/license.html">License</a></li>
+                </ul>
+
             </div>
           </div>
-        </div>
 

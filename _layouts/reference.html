@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+        {% include framework.html-fragment %}
+</head>
+<body>
+
+  <div id="page">
+
+    {% include top-bar.html-fragment %}
+
+    <div id="nom-content" class="nom-bordered">
+
+      <div class="subnav">
+        <ul class="nav nav-pills">
+          <li {% if page.url contains 'console' %} class="active" {% endif %} ><a href="/documentation/reference/console.html">Console</a></li>
+          <li {% if page.url contains 'context' %} class="active" {% endif %} ><a href="/documentation/reference/context.html">Context</a></li>
+          <li {% if page.url contains 'function' %} class="active" {% endif %} ><a href="/documentation/reference/function.html">Function</a></li>
+          <li {% if page.url contains 'iterator' %} class="active" {% endif %} ><a href="/documentation/reference/iterator.html">Iterator</a></li>
+          <li {% if page.url contains 'object' %} class="active" {% endif %} ><a href="/documentation/reference/object.html">Object</a></li>
+          <li {% if page.url contains 'number' %} class="active" {% endif %} ><a href="/documentation/reference/number.html">Number</a></li>
+          <li {% if page.url contains 'set' %} class="active" {% endif %} ><a href="/documentation/reference/set.html">Set</a></li>
+          <li {% if page.url contains 'string' %} class="active" {% endif %} ><a href="/documentation/reference/string.html">String</a></li>
+          <li {% if page.url contains 'type' %} class="active" {% endif %} ><a href="/documentation/reference/type.html">Type</a></li>
+        </ul>
+      </div>
+
+      {{ content }}
+
+    </div>
+
+    {% include signature.html-fragment %}
+
+  </div>
+
+</body>
+</html>
+

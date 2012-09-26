@@ -7,16 +7,11 @@ Hello world
 
 This is the *hello world* example.
 
-        ( 'hello world' delog .)
+        ( console write 'Hello world!' newl .)
 
-The output is similar to:
+This produces the following output:
 
-        ::::			[11f:STRING "hello world"]
-        0000	r->value	[244:CLOSURE]
+        Hello world!
 
-Sorry about only having debug logging output. Technically
 
-        'hello world'
-
-would do, but hey.
 

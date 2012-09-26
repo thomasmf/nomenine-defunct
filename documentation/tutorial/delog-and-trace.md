@@ -2,6 +2,8 @@
 layout: tutorial
 ---
 
+<hr>
+
 Output
 ------
 
@@ -9,6 +11,8 @@ There are currently no output functionality other then those used for debugging.
 
 In the future, there will be IO based on sets and throw/catch.
 
+
+<hr>
 
 Delog
 -----
@@ -33,6 +37,8 @@ nice debug logging for other types of objects, but I have not done so.
 The result of **delog** will always be the object to which it was sent.
 In practice, this means that one can insert **delog** at any point in the code without it having any effect on the code other than the outputting of the data.
 
+
+<hr>
 
 Tron and troff
 --------------

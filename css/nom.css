@@ -1,0 +1,65 @@
+
+
+html {
+  overflow-y: scroll ;
+  overflow-x: auto ;
+}
+
+body {
+  margin: 0 ;
+  padding: 0 ;
+  text-align: center ;
+  background-image: url('http://metatools.org/background.jpg') ;
+  background-position: left top ;
+  background-repeat: no-repeat ;
+  background-size: 100% ;
+  background-color: #4c8de7
+}
+
+.nom-bordered {
+  border: 1px solid #dddddd;
+  border-collapse: separate;
+  *border-collapse: collapse;
+  border-left: 0;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+#page {
+  max-width: 940px ;
+  text-align: left ;
+  padding: 0 ;
+  margin: 0 auto ;
+}
+
+#nom-content {
+  text-align: left ;
+  padding: 10px 40px 30px ;
+  margin: 0 auto ;
+  background-color: #ffffff ;
+}
+
+.nom-post-title {
+  font-size: 24px ;
+  margin: 0px 10px 0px ;
+}
+
+.nom-post-date {
+  font-size: 12px ;
+}
+
+.nom-post {
+  margin: 20px 0px 20px ;
+}
+
+.nom-post-header {
+  margin: 10px 0px 10px ;
+}
+
+
+
+
+
+
+

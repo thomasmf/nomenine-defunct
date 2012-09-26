@@ -2,20 +2,20 @@
 layout: tutorial
 ---
 
-
-
 Functions
 =========
 
-Nominine provide functions and methods in the same way that OOPs like Python and JavaScript does.
+Nominine provide functions and methods much in the same way that OOPs like Python and JavaScript does.
+By this, I mean that methods are functions that are *applied* to a specific object.
 
+<hr>
 
 Simple functions
 ----------------
 
 The following defines the function **square**:
 
-        fun (: 'square' ( number ) [
+        defun (: 'square' ( number ) [
           that * ( that )
         ] )
 
@@ -23,40 +23,54 @@ To use this function, write:
 
         ( square 10 )
 
+Notice that **defun** is short for **def** **fun**.
+The above function could also be defined by writing:
+
+        def (: 'square' ( fun (: ( number ) [
+          that * ( that )
+        ] ) ) )
+
+<hr>
+
 Methods
 -------
 
 The following defines a method on a number:
 
-        const (: 'other-number' ( class [
-          is 0
+        defact (: 'newnumber' ( number ) [
+
+          that
+
           does (: 'max' ( number ) [
             this < ( that ) else [ this ]
           ] )
-        ] ) )
 
-Notice the use of `is 0`. This makes the new class a subclass of **number** by *being* an instance of the built-in **number** type.
-The new number type is interchangeable with other numbers, even for built-in functionality. However, operations on **number**
-instances that return new instances of **number**, will produce simple number instances without the **max** method.
+        ] )
+
+This defines a new type **newnumber** that takes a number as an argument to construct a number with a **max** method.
 
 To use this write something like:
 
-        var (: 'a-number' ( other-number new ) )
+        var (: 'some-newnum' ( newnum( 10 ) ) )
 
-        ( a-number max 20 )
+        ( some-newnum max 20 )
 
-This declares a variable named **a-number** which is an instance of the other-number class. Then the **max** method is used.
+This declares a variable named **some-newnum** which is a **newnum**.
+Then the **max** method is used.
 
+<hr>
 
 First order functions
 ---------------------
 
-**function** is the function class. It is a normal class and it is a constructor that takes two parameters.
+**fun** is the function type.
+Use **fun** to construct first-order functions.
 
 The following will return 25:
 
-        ( function (: ( number ) [ that * ( that ) ] ) 5 )
+        ( fun (: ( number ) [ that * ( that ) ] ) 5 )
 
+<hr>
 
 Functions as parameters
 -----------------------
@@ -65,13 +79,14 @@ Functions can be passed as arguments.
 
 The following defines a function that takes a function as a parameter:
 
-        fun (: 'square' ( function ) [
+        fun (: 'square' ( fun ) [
           that ( some-object )
         ] )
 
 Note: Due to current limitations, it is not possible to specify a the type of a function to include
 its parameters and return type when using it as a parameter.
 
+<hr>
 
 Apply
 -----
@@ -80,16 +95,15 @@ Functions can be connected to an object, which will be called **this**. When usi
 this connection is done implicitly. Function objects have an **apply** method that can be used to
 explicitly connect an object to a function.
 
-Notice that named functions and object methods are created on invocation, so **apply** does not change **this**
-for further usages of that function or method by name.
+Notice that methods are created on invocation, so **apply** does not change **this**
+for further usages of that method by name.
 
-**this** as used by functions defined in a local scope, is that scope object.
+The following statement will create a function using **var** and **fun** and then reassign **this** to **some-object**.
 
-As a rule, **apply** only work for first order functions. The following statement will create a function
-using **var** and **function** and then reassign **this** to **some-object**.
+        var (: 'f' ( fun (: ( any ) [ ... ] ) ) )
 
-        var (: 'f' ( function (: ( any ) [ ... ] ) ) )
+        ( f ( apply ( some-object ) !) .)
 
-        ( f assign ( some-object ) .)
-
+Notice the use of noun to update **f**.
+**apply** creates a new object, which consists of the old function wrapped in an **applicator**.
 

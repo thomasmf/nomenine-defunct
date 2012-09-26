@@ -7,6 +7,8 @@ Else and then
 
 Nominine does not have booleans. It uses none and not none to manage control flow and decision making.
 
+<hr>
+
 Else
 ----
 
@@ -18,6 +20,8 @@ object is none. The result of **else** is the result of the expression or the ob
 The following expression will return **x** if **x** is defined, otherwise it will return 0.
 
         ( x else [ 0 ] )
+
+<hr>
 
 Then
 ----
@@ -35,6 +39,8 @@ The following expression will return **x** if **y** is defined, otherwise it wil
 
         ( y then [ x ] else [ 0 ] )
 
+<hr>
+
 Comparison
 ----------
 
@@ -50,6 +56,7 @@ This will return 2.
 This will return 100 iff x is between 1 and 100.
 If **x** is not with this range then the expression will return **none**.
 
+<hr>
 
 None
 ----
@@ -60,6 +67,8 @@ Everything except **none** is "true".
 The following expression will divide 100 by x if x is not 0, otherwise it will divide by 0.00001.
 
         ( 100 / ( 0 != ( x ) else [ 0.00001 ] ) )
+
+<hr>
 
 Loops
 -----
@@ -81,7 +90,7 @@ Traditionally one uses the word "break" to do this, but Nominine uses **stop**. 
           ( condition-2 else [ stop ] .)
         ]
 
-
+<hr>
 
 Errors
 ------
