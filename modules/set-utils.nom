@@ -1,0 +1,40 @@
+
+
+none
+
+does (: 'print-all' ( set ) [
+  ( 'print-all' delog .)
+  def (: 'elements' ( that each ) )
+  loop [
+    elements next else [ return ( none ) ] delog
+  ]
+  that
+] )
+
+does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
+  gen (: ( number ) [
+    var (: 'index' ( that from ) )
+    loop [
+      that to > ( index ( index + 1 !) ) else [ stop ] throw
+    ]
+  ] )
+] )
+
+
+does (: 'sort' ( set ) [
+
+  def (: 'elements' ( that each ) )
+  def (: 'pivot' ( elements next else [ return [] ] ) )
+  var (: 'low' [] )
+  var (: 'high' [] )
+
+  loop [
+    elements next else [ stop ] > ( pivot )
+    then [ high ( elements value ) ]
+    else [ low ( elements value ) ]
+  ]
+
+  this sort ( low ) ( pivot ) merge ( this sort ( high ) )
+
+] )
+

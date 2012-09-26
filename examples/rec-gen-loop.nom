@@ -1,0 +1,12 @@
+
+defun (: 'recgen' ( number ) [
+  ( that -- throw .)
+  that > 0 then [ recgen ( that ) ]
+] )
+
+defun (: 'recprint' ( iterator ) [
+  that next delog then [ recprint ( that ) ]
+] )
+
+( recprint ( gen (: ( number ) [ recgen 10 ] ) each ) .)
+

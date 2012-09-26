@@ -1,0 +1,12 @@
+
+
+( console write
+  'Hope you are using "rlwrap"!' newl
+  'Also, this is seriously flawed at the moment.' newl
+  'Add extra space at end of expressions:P' newl
+ .)
+
+loop [
+  console write '> ' ( console read parse eval ) newl
+]
+

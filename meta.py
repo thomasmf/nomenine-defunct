@@ -22,8 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class META :
   NAME = 'unamed'
   HEADER = ''
-  TYPES = ''
-  CLASSES = []
+  DECL = ''
+  TYPES = []
 
 def BUILD() :
   result_h = ''
@@ -34,10 +34,10 @@ def BUILD() :
     '\ntypedef struct ' + c.name + '_struct * ' + c.name + ' ;'
   for c in T.classes ] ) )
 
-  result_h += META.TYPES
+  result_h += META.DECL
 
   result_h += ( ''.join( [
-    '\nCLASS ' + c.name + '_class ;'
+    '\nTYPE ' + c.name + '_type ;'
   for c in T.classes ] ) )
 
   result_h += ( ''.join( [
@@ -59,24 +59,16 @@ def BUILD() :
 
   result_c += ( ''.join( [
     '\n#define THIS c(' + c.name +',task->action->value)' +
-    '\n#define THIS_R newREFERENCE( ' + c.name + '_class, task->context->this->value, any(THIS) )' +
-    '\n#define DO_CLASS_ID_TEST CLASS_RESPONSE(' + c.name + '_class )'
-    '\n#define PSTHIS ' + ( ( 'C(' + c.t1 + ',' ) if c.t1 else 'any(' ) + 'task->context->this->specific_value)' +
-    '\n#define PSTHAT ' + ( ( 'C(' + c.t2 + ',' ) if c.t2 else 'any(' ) + 'task->context->that->specific_value)' +
+    '\n#define THIS_R newREFERENCE( ' + c.name + '_type, task->context->this->value, any(THIS) )' +
+    '\n#define DO_TYPE_ID_TEST TYPE_RESPONSE(' + c.name + '_type )'
+    '\n#define PSTHIS ' + ( ( 'C(' + c.t1 + ',' ) if c.t1 else 'any(' ) + 'task->context->this->svalue)' +
+    '\n#define PSTHAT ' + ( ( 'C(' + c.t2 + ',' ) if c.t2 else 'any(' ) + 'task->context->that->svalue)' +
     '\nn_void ' + c.name + '_objective( TASK task ) {' + c.objective + '}' +
     '\n#undef PSTHAT' +
     '\n#undef PSTHIS' +
-    '\n#undef DO_CLASS_ID_TEST' +
+    '\n#undef DO_TYPE_ID_TEST' +
     '\n#undef THIS_R' +
     '\n#undef THIS' +
-    '\nANY ' + c.name + '_constructor( n_void ) {' +
-    ( (
-      '\n  return any(new' + c.name + '( ' +
-      ( ', '.join( [
-        'c(' + a.t + ',' + a.v + ')'
-      for a in c.attributes ] ) ) + ' ) ) ;'
-    ) if ( not c.constructor ) else ( c.constructor ) ) +
-    '\n' + '}' +
     '\nn_string debug' + c.name + '( ANY o ) {' +
     '\n  char * s ;' +
     '\n  asprintf( &s, "[%03x:%s' + c.debug.f + ']", c( n_integer, o ) >> 4 & 0xfff, "' + c.name + '"' +
@@ -101,14 +93,14 @@ def BUILD() :
     )
   for c in T.classes ] ) + '' )
 
-  result_h += '\nn_void INITIALIZE_' + META.NAME + '_CLASSES() ;'
-  result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_CLASSES() {' + ( ''.join( [
-    '\n  ' + c.name + '_class = newCLASS( newID(), ' + c.name + '_objective, ' + c.name + '_constructor, any(NONE) ) ; '
+  result_h += '\nn_void INITIALIZE_' + META.NAME + '_TYPES() ;'
+  result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_TYPES() {' + ( ''.join( [
+    '\n  ' + c.name + '_type = newTYPE( newID(), ' + c.name + '_objective, any(NONE), any(NONE) ) ; '
   for c in T.classes ] ) ) + '\n}' )
 
   result_h += '\nn_void INITIALIZE_' + META.NAME + '_WORDS() ;'
   result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_WORDS() {' +
-    '\n  WORDS = listNEW( WORD_class ) ; ' + ( ''.join( [
+    '\n  WORDS = listNEW( WORD_type ) ; ' + ( ''.join( [
     '\n  WI_' + stringtocid( w ) + ' = wordNEW( "' + w + '" ) ; '
   for w in T.words ] ) ) + '\n}' )
 
@@ -124,22 +116,20 @@ class D:
     self.d = d
 
 class A:
-  def __init__( self, t, n, v = 'NONE' ) :
+  def __init__( self, t, n ) :
     self.t = t
     self.n = n
-    self.v = v
 
 class T:
   classes = []
   words = []
-  def __init__( self, name, t1 = None, t2 = None, attributes = (), objective = "", debug = D(), constructor = None ) :
+  def __init__( self, name, t1 = None, t2 = None, attributes = (), objective = "", debug = D() ) :
     self.name = name
     self.t1 = t1
     self.t2 = t2
     self.attributes = attributes
     self.objective = objective
     self.debug = debug
-    self.constructor = constructor
     T.classes.append( self )
 
 def stringtocid( s ) :
@@ -153,5 +143,77 @@ def stringtocid( s ) :
 
 def W( *words ) :
   T.words = words
+
+class X:
+  def __init__( self, n, c ) :
+    self.n = n
+    self.c = c
+  
+
+def P( name, *parameters ) :
+
+  T( 'PARAM' + name + '_assort', None, None, (), """
+    REFERENCE tuple = refNEW( TUPLE_type, any(NONE) ) ;
+    REFERENCE tuple_ref = ref(tuple) ;
+    task->next = newTASK( ref(newPARAM%(name)s_0( tuple )), task->context, task->result, task->next, task->exit ) ;
+    CONTEXT c0 = newCONTEXT( task->context->closure, tuple_ref, ref(newNOUN( task->context->that )) ) ;
+    task->next = newTASK( tuple_ref, c0, ref(NONE), task->next, task->next ) ;
+  """ % { 'name':name } )
+
+  T( 'PARAM' + name + '_0', None, None, (
+    A( 'REFERENCE', 'tuple' ),
+  ), """
+//    OUT( assort 0 ) ;
+//    %(dbg)s
+    if ( NOTNONE( THIS->tuple->value ) ) {
+      if ( C(TUPLE,THIS->tuple->value)->length == %(len)s ) {
+//        OUT( assort 0.1 ) ;
+        %(decl)s
+        task->next = newTASK( ref(newPARAM%(name)s_1( %(attr)s )), task->context, task->result, task->next, task->exit ) ;
+        %(check)s
+      }
+    }
+  """ % { 'name':name, 'len':len(parameters),
+    'dbg': ( ''.join( [ 'LOG( C(TUPLE,THIS->tuple->value)->data[%s]->value ) ;' % str( i ) for i in range( len(parameters) ) ] ) ),
+    'attr': ( ', '.join( [ p.n + '_ref' for p in parameters ] ) ),
+    'decl': ( ''.join( [ """
+        REFERENCE %(name)s_ref = refNEW( %(cls)s_type, any(NONE) ) ;
+        REFERENCE %(name)s_ref_ref = ref(%(name)s_ref) ;
+      """ % { 'name':p.n, 'cls':p.c } for p in parameters ] ) ),
+    'check': ( ''.join( [ """
+        CONTEXT c%(name)s = newCONTEXT( task->context->closure, %(name)s_ref_ref, ref(newNOUN( C(TUPLE,THIS->tuple->value)->data[%(i)s] )) ) ;
+        task->next = newTASK( %(name)s_ref_ref, c%(name)s, ref(NONE), task->next, task->next ) ;
+    """ % { 'i':i, 'name':parameters[i].n } for i in range( len(parameters) ) ] ) )
+  } )
+
+  T( 'PARAM' + name + '_1', None, None, [
+    A( 'REFERENCE', p.n + '_ref' ) for p in parameters
+  ], """
+//    OUT( assort 1 ) ;
+//    %(dbg)s
+    if ( %(test)s ) {
+//      OUT( assort 1.1 ) ;
+      RETURN( newPARAM%(name)s_struct( %(pass)s ) ) ;
+    }
+  """ % { 'name':name,
+    'dbg': ( ''.join( [ 'LOG( THIS->%s_ref->value ) ;' % p.n for p in parameters ] ) ),
+    'test': ( ' && '.join( [ 'NOTNONE( THIS->%s_ref->value )' % p.n for p in parameters ] ) ),
+    'pass': ( ', '.join( [ 'THIS->%s_ref' % p.n for p in parameters ] ) )
+  } )
+
+  T( 'PARAM' + name + '_struct', None, None, [
+    A( 'REFERENCE', p.n + '_ref' ) for p in parameters
+  ], """
+    DO_TYPE ;
+    %(attr)s
+  """ % { 'attr': ( ''.join( [ """
+    ATTRIB( WI_%(p)s, THIS->%(p)s_ref->value ) ;
+  """ % { 'p':p.n } for p in parameters ] ) ) } )
+
+
+
+
+
+
 
 

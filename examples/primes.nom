@@ -1,0 +1,34 @@
+
+defun (: 'until-ceiling' ( param (: (: 'max' ( number ) ) (: 'the-set' ( set ) ) ) ) [
+  gen (: ( number ) [
+    def (: 'elements' ( that the-set each ) )
+    loop [
+      that max >= ( elements next else [ stop ] ) else [ stop ] throw
+    ]
+  ] )
+] )
+
+defun (: 'dividable' ( param (: (: 'n' ( number ) ) (: 'the-set' ( set ) ) ) ) [
+  def (: 'elements' ( that the-set each ) )
+  loop [
+    that n mod ( elements next else [ stop ] ) == 0 then [ return ( elements value ) ]
+  ]
+  none
+] )
+
+def (: 'primes-set' (
+  gen (: ( number ) [
+    def (: 'known-primes' ( list ( number ) ) )
+    var (: 'i' 1 )
+    loop [
+      ( i ( i + 1 !) .)
+      ( dividable (: ( i ) ( until-ceiling (: ( i sqrt ) ( known-primes ) ) ) ) else [
+        ( known-primes ( i ) .)
+        ( i throw .)
+      ] .)
+    ]
+  ] )
+) )
+
+( console write ( until-ceiling (: 123 ( primes-set ) ) ) newl .)
+

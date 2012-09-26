@@ -1,14 +1,17 @@
 
 CC=gcc
-CFLAGS=-c -Wall -I/usr/include/gc
+CFLAGS=-c -g -Wall -I/usr/include/gc
 
-all:		nominine makefile
+all:		nominine
 
-nominine:	core.o utils.o main.o
-		$(CC) main.o core.o utils.o -lgc -lm -o nominine
+nominine:	core.o utils.o main.o parser.o
+		$(CC) main.o core.o utils.o parser.o -lgc -lm -o nominine
 
-main.o:		core.o utils.h main.c utils.h
+main.o:		core.o utils.h parser.h main.c utils.h
 		$(CC) $(CFLAGS) main.c
+
+parser.o:	core.o utils.h parser.h parser.c
+		$(CC) $(CFLAGS) parser.c
 
 utils.o:	core.o utils.h utils.c
 		$(CC) $(CFLAGS) utils.c

@@ -1,0 +1,38 @@
+
+def (: 'fib-set' (
+  gen (: ( number ) [
+    def (: 'n' 1 )
+    var (: 'v0' 0 ) var (: 'v1' 1 ) var (: 'v2' 0 )
+    loop [
+      ( v2 throw .)
+      ( v0 ( v1 !) .)
+      ( v1 ( v2 !) .)
+      ( v2 ( v0 + ( v1 ) !) .)
+    ]
+  ] )
+) )
+
+defun (: 'getn' ( param (: (: 'n' ( number ) ) (: 'the-set' ( set ) ) ) ) [
+  gen (: ( number ) [
+    def (: 'i' 0 )
+    def (: 'elements' ( that the-set each ) )
+    loop [
+      ( that n >= ( i ++ ) else [ stop ] .)
+      ( elements next else [ stop ] throw .)
+    ]
+  ] )
+] )
+
+defun (: 'ceiling' ( param (: (: 'max' ( number ) ) (: 'the-set' ( set ) ) ) ) [
+  gen (: ( number ) [
+    def (: 'elements' ( that the-set each ) )
+    loop [
+      that max > ( elements next else [ stop ] ) then [ elements value throw ]
+    ]
+  ] )
+] )
+
+def (: 'first-100' ( getn (: 100 ( fib-set ) ) ) )
+
+( console write ( ceiling (: ( 2 pow 52 ) ( first-100 ) ) join ( ',' tab ) ) newl .)
+

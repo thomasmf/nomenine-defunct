@@ -34,119 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "core.h"
 #include "utils.h"
-
-ANY PARSE_string( n_integer *i, n_string source ) {
-  n_character x ;
-  n_integer last = (*i) ;
-  while( TRUE ) {
-    x = source[ (*i)++ ] ;
-//    printf( "%d:%c\\n", (*i), x ) ;
-    if ( x == 0 ) {
-      printf( "Parse error\\n" ) ;
-      exit( 1 ) ;
-    }
-    if ( x == '\'' ) {
-      return any( newSTRING( strndup( &(source[ last ]), (*i)-last-1 ) ) ) ;
-    }
-  }
-}
-
-#define ISTOKENCHAR(x) ( ( x != '[' ) && ( x != ']' ) && ( x != '(' ) && ( x != ')' ) && ( x > 0x20 ) && ( x < 0x7f ) )
-
-ANY PARSE_token( n_integer *i, n_string source ) {
-  n_character x ;
-  n_integer last = (*i)-1 ;
-  n_string token ;
-  while( TRUE ) {
-    x = source[ (*i)++ ] ;
-//    printf( "%d:%c\\n", (*i), x ) ;
-    if ( x == 0 ) {
-      printf( "Parse error\\n" ) ; exit( 1 ) ;
-    }
-    if ( !ISTOKENCHAR(x) ) {
-      (*i)-- ;
-      token = strndup( &(source[ last ]), (*i)-last ) ;
-      n_string r ;
-      n_float n = strtod( token, &r ) ;
-      if ( *r == '\0' ) {
-        return any(newNUMBERliteral( newNUMBER( n ) )) ;
-      } else {
-        return any(wordNEW( token )) ;
-      }
-    }
-  }
-}
-
-ANY PARSE( n_integer *i, n_string source ) ;
-
-ANY PARSE_quote( n_integer *i, n_string source ) {
-  n_character x ;
-  LIST tokens = listNEW( ANY_class ) ;
-  while( TRUE ) {
-    x = source[ (*i)++ ] ;
-//    printf( "%d:%c\\n", (*i), x ) ;
-    if ( x == 0 ) {
-      printf( "Parse error: expected ']'.\n" ) ; exit( 1 ) ;
-    } else if ( x == '(' ) {
-      listAPPEND( tokens, ref(PARSE( i, source )) ) ;
-    } else if ( x == ')' ) {
-      printf( "Parse error: unexpected ')'.\n" ) ; exit( 1 ) ;
-    } else if ( x == '[' ) {
-      listAPPEND( tokens, ref(PARSE_quote( i, source )) ) ;
-    } else if ( x == ']' ) {
-//      printf( "tokens: %d\\n", tokens->length ) ;
-      return any(newLISTliteral( tokens )) ;
-    } else if ( x == '\'' ) {
-      listAPPEND( tokens, ref(PARSE_string( i, source )) ) ;
-    } else if ( ( x > 0x20 ) && ( x < 0x7f ) ) {
-      listAPPEND( tokens, ref(PARSE_token( i, source )) ) ;
-    }
-  }
-}
-
-ANY PARSE( n_integer *i, n_string source ) {
-  n_character x ;
-  LIST tokens = listNEW( ANY_class ) ;
-  while( TRUE ) {
-//    OUT( parsing stuff ) ;
-//    printf( "%d\\n", (*i) ) ;
-    x = source[ (*i)++ ] ;
-//    printf( "%d:%c\\n", (*i), x ) ;
-    if ( x == 0 ) {
-      return any(newPHRASE( tokens )) ;
-    } else if ( x == '(' ) {
-      listAPPEND( tokens, ref(PARSE( i, source )) ) ;
-    } else if ( x == ')' ) {
-      return any(newPHRASE( tokens )) ;
-    } else if ( x == '[' ) {
-      listAPPEND( tokens, ref(PARSE_quote( i, source )) ) ;
-    } else if ( x == ']' ) {
-      printf( "Parse error: unexpected ']'.\n" ) ; exit( 1 ) ;
-    } else if ( x == '\'' ) {
-      listAPPEND( tokens, ref(PARSE_string( i, source )) ) ;
-    } else if ( ( x > 0x20 ) && ( x < 0x7f ) ) {
-      listAPPEND( tokens, ref(PARSE_token( i, source )) ) ;
-    }
-  }
-}
-
-
-n_string read_source( n_string filename ) {
-  n_integer size ;
-  n_string result ;
-  FILE* f = fopen( filename, "r" ) ;
-  if ( f == NULL ) {
-    printf( "IO error: file '%s' not found.\n", filename ) ; exit( 1 ) ;
-  }
-  fseek( f, 0, SEEK_END ) ; size = ftell( f ) ; fseek( f, 0, SEEK_SET ) ;
-  result = (n_string)malloc( size + 1 ) ;
-  if ( size != fread( result, sizeof( n_character ), size, f ) ) {
-    printf( "IO error: cannot read from file '%s'.\n", filename ) ; exit( 1 ) ;
-  }
-  fclose( f ) ;
-  result[ size ] = 0 ;
-  return result ;
-}
+#include "parser.h"
 
 #undef CONTINUE
 #define CONTINUE continue
@@ -163,22 +51,41 @@ int main( int argc, const char* argv[] ) {
 
   n_boolean trace_state = FALSE ;
 
-  INITIALIZE_core_CLASSES() ;
+  NONE = newNONETYPE() ;
+
+  INITIALIZE_core_TYPES() ;
   INITIALIZE_core_WORDS() ;
 
-  NONE = newNONETYPE() ;
   IGNORE = newIGNORETYPE() ;
   UNUSED = ref(NONE) ;
   LOOPstop = newLOOPstopTYPE() ;
+  CONSOLEOBJECT = newCONSOLE() ;
 
   ROOT = newCLOSURE( c(CLOSURE,NONE), ref(NONE), ref(NONE), ref(newROOTOBJECT()), ref(NONE) ) ;
   ROOT->parent = ROOT ;
 
-  USERCLASS = any(newGETS( ref(CLASS_class), LIST_class, any(newSETCUSTOMCONSTRUCTOR()) ) ) ;
-  LISTCLASS = any(newGETS( ref(LIST_class), CLASS_class, any(newSETCUSTOMLIST()) ) ) ;
-  FUNCTIONCLASS = any(newIS( any(APPLICATOR_class), any(newAPPLICATOR( ref(APPLICATOR_class), PARAMcl_class, any(newAPPLICATORCONSTRUCTOR()) )) )) ;
-  GENERATORCLASS = any(newIS( any(GENERATOR_class), any(newAPPLICATOR( ref(GENERATOR_class), PARAMcl_class, any(newGENERATORCONSTRUCTOR()) )) )) ;
+  PARAMwa = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwa_assort()) ) ;
+  PARAMwc = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwc_assort()) ) ;
+  PARAMws = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMws_assort()) ) ;
+  PARAMwf = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwf_assort()) ) ;
+  PARAMwca = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwca_assort()) ) ;
+  PARAMwcs = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwcs_assort()) ) ;
+  PARAMcs = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMcs_assort()) ) ;
 
+  CATfact = any(newFUNCTION( SET_type, any(newCATconst()) )) ;
+  FACTfact = any(newFUNCTION( ANY_type, any(newFACTconst()) )) ;
+  ASSORTfact = any(newFUNCTION( TUPLE_type, any(newASSORTconst()) )) ;
+  PARAMfact = any(newFUNCTION( TUPLE_type, any(newPARAMconst()) )) ;
+  MODULEfact = any(newFUNCTION( STRING_type, any(newMODULEconst()) )) ;
+
+  FUNCTION_type->constructor = any(newFUNCTION( PARAMcs, any(newFUNCTIONconst()) )) ;
+  LIST_type->constructor = any(newFUNCTION( TYPE_type, any(newSETCUSTOMLIST()) )) ;
+  GENERATOR_type->constructor = any(newFUNCTION( PARAMcs, any(newGENERATORconst()) )) ;
+  STRUCT_type->constructor = any(newFUNCTION( TUPLE_type, any(newSTRUCTconst()) )) ;
+
+  STRINGprimitive_type->id = STRING_type->id ;
+  STRING_type->constructor = any(newFUNCTION( STRING_type, any(newSTRINGconst()) )) ;
+  STRING_type->comparator = any(newSTRINGcat()) ;
 
   n_integer parse_index = 0 ;
   PHRASE program = C( PHRASE, PARSE( &parse_index, read_source( (n_string)argv[ 1 ] ) ) ) ;
@@ -205,7 +112,7 @@ int main( int argc, const char* argv[] ) {
 
   }
 
-  LOG( r->value ) ;
+//  LOG( r->value ) ;
 
   return EX_OK ;
 }
