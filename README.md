@@ -50,10 +50,10 @@ Example
 
 Here is an example of what source code looks like:
 
-        fun (: 'sort' ( set ) [
+        defun (: 'sort' ( set ) [
 
-          const (: 'elements' ( that each ) )
-          const (: 'pivot' ( elements next else [ return [] ] ) )
+          def (: 'elements' ( that each ) )
+          def (: 'pivot' ( elements next else [ return [] ] ) )
           var (: 'low' [] )
           var (: 'high' [] )
 
@@ -63,13 +63,13 @@ Here is an example of what source code looks like:
             else [ low ( elements value ) ]
           ]
 
-          sort( low ) ( pivot ) merge( sort( high ) )
+          sort ( low ) ( pivot ) merge( sort ( high ) )
 
         ] )
 
 This defines a function 'sort' which can be used to sort a list:
 
-        sort [ 5 4 2 3 1 ]
+        ( sort (: 5 4 6 3 7 9 6 3 ) )
 
 It returns a sorted list.
 
