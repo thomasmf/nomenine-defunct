@@ -15,7 +15,7 @@ Download
 
 Get the source using git:
 
-        git clone https://github.com/thomasmf/nomininte.git
+        git clone https://github.com/thomasmf/nominine.git
 
 
 Compilation
