@@ -7,6 +7,8 @@ Syntax and Semantics
 
 This page explains the key concepts of syntax and semantics using other languages for comparison.
 
+Syntax and semantics in Nominine is directly derived from the way objects work in Nominine as described in the previous chapter.
+
 <hr>
 
 Lisp
@@ -17,7 +19,7 @@ In a Lisp expression, like
 
         ( f a b c )
 
-it is the first term inside the parenthesis, "f", that denotes function or action to be taken.
+it is the first term inside the parenthesis, "f", that denotes the action to be taken.
 To get the gist of what is going on, one looks at the first term.
 
 All the remaining parts of the parenthesis are parameters.
@@ -56,7 +58,7 @@ but it illustrates perfectly the syntax and semantics of Nominine.
 
 The complete source code for Mininine:
 
-        function newNumber( that ) {
+        function newNumber( state ) {
           result = function( that ) {
             if ( that.type == 'number' ) {
               return newNumber( arguments.callee.state + that.state )
@@ -66,17 +68,26 @@ The complete source code for Mininine:
                 return arguments.callee
               }
             }
+            return none ;
           }
           result.type = 'number' ;
-          result.state = that ;
+          result.state = state ;
           return result ;
         }
 
-        function newWord( that ) {
-          result = function( that ) {}
+        function newWord( state ) {
+          result = none ;
           result.type = 'word' ;
-          result.state = that ;
+          result.state = state ;
           return result ;
+        }
+
+        start_context = function( that ) {
+          return that ;
+        }
+
+        none = function( that ) {
+          return none ;
         }
 
 
@@ -85,7 +96,7 @@ A Mininine object is a function with **type** and **state**.
 - State is the information contained in that object.
 - The function itself is the *objective* of that object.
 
-Mininine has only two different types of objects.
+Mininine has only two types of objects.
 
 - Words
 
@@ -101,13 +112,19 @@ Mininine has only two different types of objects.
 
    - When a number receives the word 'output', it will simply print its state to console. After the printing is done, it will return itself as the result so that more operations can be done on it.
 
+In addition to the two types, Mininine has two predefined objects:
+
+- **start_context** just returns its parameter. Other than that **start_context** has no defined words.
+
+- **none** just produces none. This is just to assure that we are always working on actual objects, even when things go wrong.
+
 Here is an example expression:
 
         ( 10 5 output 100 output )
 
 In Mininine, this is evaluated by manually translating it to the following:
 
-        newNumber( 10 )( newNumber( 5 ) )( newWord( 'output' ) )( newNumber( 100 ) )( newWord( 'output' ) )
+        start_context( newNumber( 10 ) )( newNumber( 5 ) )( newWord( 'output' ) )( newNumber( 100 ) )( newWord( 'output' ) )
 
 Notice that there is a one-to-one correspondence between the source code ( syntax ) and what it does ( semantics ).
 
@@ -125,11 +142,23 @@ In JavaScript, the loop might look something like:
           current_result = current_result( parameter )
         }
 
-Notice that **current_result** is initialized with an object called **start_context**.
-**start_context** represents current scope.
+Notice that **current_result** is initialized with **start_context**.
 
-In the manually translated Mininine expression above, the start-context is build by newNumber( 10 ).
-In Nominine the start-context is always a context object.
+<hr>
+
+Start contexts
+--------------
+
+Start contexts represent the current scope.
+This is where new variables are set and objects are thrown.
+
+Every time a new local scope is created, such as on function invocation,
+a new start context is created and linked to the parent start contexts.
+The start contexts form the stack of Nominine.
+
+As Nominine expressions are paths, all of these paths start implicitly with the start context that constitute the local scope.
+This way one can get access to variables.
+Start contexts also provide a number of methods that will be described later.
 
 <hr>
 
@@ -145,20 +174,46 @@ The path
 
         ( a b c )
 
-would therefore translate to the following:
+would therefore translate to the following ( translated Mininine expression ):
 
         start_context( newWord( 'a' ) )( newWord( 'b' ) )( newWord( 'c' ) )
 
-Notice the use of **start_context** here.
 In this example **a** would be a variable in the current scope. **start_context**, representing the current scope,
 would behave like it had an attribute named 'a'.
+
+<hr>
+
+Literals
+--------
+
+In Nominine there are the following literals and syntax elements:
+
+- Words:
+
+        some-word
+
+- Numbers:
+
+        123.456
+
+- Strings:
+
+        'this is a string'
+
+- Expressions:
+
+        ( this is an expression )
+
+- Quoted expressions:
+
+        [ this is a quoted expression ]
 
 <hr>
 
 Parameters
 ----------
 
-Given the expression
+Given the expression ( pseudo code ):
 
         a.b( 123 )
 
@@ -167,7 +222,7 @@ The equivalent in Nominine is
         ( a b 123 )
 
 This is really a special case, because 123 is a literal.
-In order to have a path to fetch a parameter such as
+In order to have a path to fetch a parameter such as ( pseudo code ):
 
         a.b( c.d )
 
@@ -177,6 +232,12 @@ on must write in Nominine
 
 to make sure that the result of 'a b' receives the *result* of 'c d' and not the word 'c'.
 One uses parenthesis to access the start-context object which represent the scope.
+
+This expression could be translated into something like ( translated Mininine expression ):
+
+        start_context( newWord( 'a' ) )( newWord( 'b' ) )(
+          start_context( newWord( 'c' ) )( newWord( 'd' ) )
+        )
 
 <hr>
 
@@ -210,8 +271,18 @@ It may seem like a lot of parenthesis, but when placing an expression in a conte
 
 which in my opinion is not bad.
 
-<hr>
+This expression could be translated into something like ( translated Mininine expression ):
 
+        start_context( newWord( 'f' ) )(
+          start_context
+          ( newWord( ':' ) )
+          ( start_context( newWord( 'a' ) )( newWord( 'b' ) ) )
+          ( start_context( newWord( 'c' ) )( newWord( 'd' ) ) )
+        )
+
+Notice that every left parenthesis in the source gets translated into a **start_context**.
+
+<hr>
 
 Adding features
 ---------------
@@ -219,6 +290,6 @@ Adding features
 In order to turn Mininine into a full fletched programming language,
 all one has to do is add more types and more properties to those types.
 
-Adding all the different features is not trivial, because a feature does not stand completely on its own.
+Adding all the different features is not trivial, because features does not stand completely on their own.
 Nominine can be extended as easily as Mininine and Nominine already has a lot of useful features.
 

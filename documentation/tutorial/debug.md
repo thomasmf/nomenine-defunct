@@ -2,18 +2,6 @@
 layout: tutorial
 ---
 
-<hr>
-
-Output
-------
-
-There are currently no output functionality other then those used for debugging.
-
-In the future, there will be IO based on sets and throw/catch.
-
-
-<hr>
-
 Delog
 -----
 
