@@ -76,7 +76,7 @@ W(
   'number', '=', '+', '-', '*', '/', '+=', '-=', '<', '<=', '==', '!=', '>=', '>', '++', '--', 'mod', 'pow', 'sqrt',
   'string', 'to-string', 'newl', 'tab', 'qt', 'parse',
   'fact', 'new', 'cat',
-  'is', 'has', 'does', 'noms', 'defs', 'gets', 'param',
+  'is', 'has', 'does', 'noms', 'defs', 'gets', 'param', 'all-attributes',
   'const', 'def', 'var', 'fun', 'nom', 'defun', 'defact',
   'this', 'that',
   'name', 'type', 'value',
@@ -84,7 +84,7 @@ W(
   'console', 'read', 'write',
   'loop', 'stop', 'continue',
   'func', 'return', 'break', 'apply',
-  'set', 'gen', 'next', 'list', 'each', 'merge', 'length', 'iterator', 'join', 'eval',
+  'set', 'gen', 'next', 'list', 'each', 'merge', 'length', 'iterator', 'join', 'eval', 'all',
   'assort', 'struct',
   'delog', 'tron', 'troff',
   'module', 'use',
@@ -572,6 +572,10 @@ T( 'HAS', None, None, (
   DO_COMMON ;
   ONWORD( THIS->word, THIS->attribute ) ;
   task->next = REP( task, THIS->rest, task->next ) ;
+  IFWORD( WI_allSUBattributes,
+    CONTEXT c1 = newCONTEXT( task->context->closure, task->context->closure->field, ref(THIS->word->value) ) ;
+    task->next = newTASK( task->context->closure->field, c1, task->result, task->next, task->next ) ;
+  ) ;
 """ )
 
 	#	does
@@ -945,13 +949,44 @@ T( 'NUMBERsubset', 'NUMBER', 'NUMBER', (), """PSTHIS->data -= PSTHAT->data ; RET
 T( 'NUMBERset',    'NUMBER', 'NUMBER', (), """PSTHIS->data = PSTHAT->data ; RETURN( PTHIS ) ;""" )
 
 
+
 	####	set
 
 T( 'SET', None, None, (), """
   DO_TYPE ;
   METHOD( WI_join, STRING_type, newJOINaction() ) ;
   IFWORD( WI_toSUBstring, task->next = newTASK( ref(newSETTOSTRaction()), task->context, task->result, task->exit, task->exit ) ; );
+  IFWORD( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
 """ )
+
+	#	all
+
+T( 'SETALLaction', None, None, (), """
+  REFERENCE r1 = ref(NONE) ;
+  REFERENCE r2 = ref(NONE) ;
+  task->next = newTASK( ref(newSETALLiterate( r1, r2 )), task->context, task->result, task->next, task->exit ) ;
+  CONTEXT c2 = newCONTEXT( task->context->closure, r1, ref(WI_next) ) ;
+  task->next = newTASK( r1, c2, r2, task->next, task->next ) ;
+  CONTEXT c1 = newCONTEXT( task->context->closure, ref(PTHIS), ref(WI_each) ) ;
+  task->next = newTASK( ref(PTHIS), c1, r1, task->next, task->next ) ;
+""" )
+
+T( 'SETALLiterate', None, None, (
+  A( 'REFERENCE', 'iterator' ),
+  A( 'REFERENCE', 'element' ),
+), """
+  if ( NOTNONE( THIS->element->value ) ) {
+    REFERENCE r1 = ref(NONE) ;
+    task->next = newTASK( ref(newSETALLiterate( THIS->iterator, r1 )), task->context, task->result, task->next, task->exit ) ;
+    CONTEXT c1 = newCONTEXT( task->context->closure, THIS->iterator, ref(WI_next) ) ;
+    task->next = newTASK( THIS->iterator, c1, r1, task->next, task->next ) ;
+    CONTEXT c2 = newCONTEXT( task->context->closure, task->context->closure->field, THIS->element ) ;
+    task->next = newTASK( task->context->closure->field, c2, task->result, task->next, task->next ) ;
+  } else {
+    RETURN( task->context->this->value ) ;
+  }
+""" )
+
 
 	#	to-string
 
@@ -1042,6 +1077,7 @@ T( 'GENERATOR', None, None, (
   METHOD( WI_join, STRING_type, newJOINaction() ) ;
   IFWORD( WI_toSUBstring, task->next = newTASK( ref(newSETTOSTRaction()), task->context, task->result, task->exit, task->exit ) ; );
   IFWORD( WI_eval, task->next = REP( task, ref(newEVALUATE( task->context->closure, ref(task->context->closure), c(SET,THIS) )), task->next ) ; ) ;
+  IFWORD( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
   ATTRIB( WI_each, iteratorNEW( task, THIS->type, THIS->expr, THIS->closure ) ) ;
 """ )
 
@@ -1063,6 +1099,7 @@ T( 'LIST', None, None, (
   METHOD( WI_join, STRING_type, newJOINaction() ) ;
   IFWORD( WI_toSUBstring, task->next = newTASK( ref(newSETTOSTRaction()), task->context, task->result, task->exit, task->exit ) ; ) ;
   IFWORD( WI_eval, task->next = REP( task, ref(newEVALUATE( task->context->closure, ref(task->context->closure), c(SET,THIS) )), task->next ) ; ) ;
+  IFWORD( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
   ATTRIB( WI_length, newNUMBER( THIS->length ) ) ;
   ATTRIB( WI_each, newLISTITERATOR( THIS, 0, any(NONE) ) ) ;
   METHOD( WI_merge, SET_type, newMERGELISTaction() ) ;
@@ -1125,6 +1162,7 @@ T( 'TUPLE', None, None, (
   DO_TYPE ;
   METHOD( WI_join, STRING_type, newJOINaction() ) ;
   IFWORD( WI_toSUBstring, task->next = newTASK( ref(newSETTOSTRaction()), task->context, task->result, task->exit, task->exit ) ; );
+  IFWORD( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
 
 //  METHOD( WI_assort, TUPLE_type, newASSORTaction() ) ;
   ATTRIB( WI_length, newNUMBER( THIS->length ) ) ;

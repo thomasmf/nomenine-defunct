@@ -281,6 +281,10 @@ def (: ( none noms (: 'to-string' [ 'mystr' ] ) ) ( none noms (: 'to-string' [ 8
 
 ( then ( ' ( console write ' qt 'hey' qt ' newl .) ' delog parse ) .)
 
+( '------------- burst test -------------' delog .)
+
+( console write ( gen (: ( number ) [ ( gen1 all .) ( : 1 2 3 4 5 all .) ( range (: -3 3 ) all .) ] ) ) newl .)
+( console write ( gen (: ( string ) [ ( 'asdfa' throw .) ( none has (: 'a1' 0 ) delog has (: 'a2' 1 ) delog all-attributes .) ] ) ) newl .)
 
 
 ( '------------- finnished -------------' delog .)
