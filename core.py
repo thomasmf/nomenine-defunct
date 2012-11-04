@@ -284,20 +284,6 @@ T( 'TYPETEST', None, None, (
 
 
 
-	####	object context
-
-T( 'OCONTEXT', None, None, (
-  A( 'ANY', 'object_1' ),
-  A( 'ANY', 'object_2' ),
-), """
-  DO_LITERAL ;
-  ONWORD( WI_COLON, tupleNEW() ) ;
-  task->next = REP( task, ref(THIS->object_1), REP( task, ref(THIS->object_2), task->next ) ) ;
-  if ( PTHAT->objective != WORD_type->instance_objective ) RETURN ( PTHAT ) ;
-""" )
-
-
-
 	####	task
 
 T( 'TASK', None, None, (

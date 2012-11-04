@@ -87,7 +87,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     task->next = newTASK(											\
       ref(newEVALUATE(												\
         task->context->closure,											\
-        ref(newOCONTEXT( any(PTHIS), any(task->context->closure) )),						\
+        ref(task->context->closure),										\
         c(SET,C(PHRASE,PTHAT)->value)										\
       )), task->context, r2,											\
       RETO( task, task->context->this, r2, task->next ),							\

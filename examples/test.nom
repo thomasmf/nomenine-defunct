@@ -3,57 +3,6 @@
 
 use ( module 'modules/set-utils.nom' )
 
-
-( '------------- fact test -------------' delog .)
-
-def (: 'myfact' ( fact ( fun (:
-
-  ( cat [ assort (:) ( that ) ] )
-
-  [
-
-    has (: 'm' ( number ) 5 )
-
-    has (: 'n' 7 )
-
-    does (: 'calc' ( fun (: ( number ) [
-      this n + ( this m ) * ( that )
-    ] ) ) )
-
-    does (: '+' ( fun (: ( myfact ) [
-      this
-      ( this n ( + ( that n ) !) .)
-      ( this m ( + ( that m ) !) .)
-    ] ) ) )
-
-    has (: 's' 'asdf' )
-
-    gets (: ( number ) [ this ( 'hellow numbr' delog ( that delog .) .) ] )
-
-    gets (: ( myfact ) [ this ( 'got a myfact' delog .) ] )
-
-  ]
-
-) ) ) )
-
-var (: 'myobj-1' ( myfact (:) ) )
-var (: 'myobj-2' ( myfact (:) ) )
-
-( myobj-2 ( m ( 1 !) .) ( n ( 2 !) .) calc 10 delog .)
-
-( myobj-1 + ( myobj-2 ) ( m delog .) ( n delog .) .)
-
-( myobj-1 calc 10 delog .)
-
-
-
-( '------------- gets context test ---------------' delog .)
-
-( myobj-1 ( myobj-2 ) ( myobj-2 ) ( myobj-2 ) .)
-
-( myobj-1 1 2 3 .)
-
-
 ( '------------- scope test -------------' delog .)
 
 defun (: 'tf' ( any ) [
@@ -149,8 +98,6 @@ var (: 'ftest4' ( ftest3 delog ) delog )
 
 ( ftest4 (: 20 30 ) delog .)
 
-var (: 'ftest5' ( myobj-1 calc ) )
-
 ( ftest5 10 delog .)
 
 var (: 'ftest6' ( fun (: ( number ) [
@@ -162,18 +109,6 @@ var (: 'ftest6' ( fun (: ( number ) [
 
 ( 'using fun' delog .)
 ( ftest6 235 delog .)
-
-( '------------- noms test -------------' delog .)
-
-( myobj-1 calc 10 delog .)
-
-( myobj-1 ( noms (: 'ps' [
-  this calc 55
-] ) !) .)
-
-( myobj-1 delog calc delog 10 delog .)
-
-( myobj-1 ps delog .)
 
 ( '------------- nom test -------------' delog .)
 
