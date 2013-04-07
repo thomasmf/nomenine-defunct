@@ -4,7 +4,7 @@ none
 
 does (: 'print-all' ( set ) [
   ( 'print-all' delog .)
-  def (: 'elements' ( that each ) )
+  var (: 'elements' ( that each ) )
   loop [
     elements next else [ return ( none ) ] delog
   ]
@@ -15,7 +15,7 @@ does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
   gen (: ( number ) [
     var (: 'index' ( that from ) )
     loop [
-      that to > ( index ( index + 1 !) ) else [ stop ] throw
+      that to > ( index ++ ) else [ stop ] throw
     ]
   ] )
 ] )
@@ -23,8 +23,8 @@ does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
 
 does (: 'sort' ( set ) [
 
-  def (: 'elements' ( that each ) )
-  def (: 'pivot' ( elements next else [ return [] ] ) )
+  var (: 'elements' ( that each ) )
+  var (: 'pivot' ( elements next else [ return [] ] ) )
   var (: 'low' [] )
   var (: 'high' [] )
 

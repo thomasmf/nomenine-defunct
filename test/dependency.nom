@@ -1,0 +1,100 @@
+
+dep (: 'x1' 0 [ y1 + 10 / 5 ] )
+dep (: 'y1' 0 [ x1 * 5 - 10 ] )
+
+( x1 = 30 .)
+( x1 == 30 else [ error 'x1 dep 1' ] .)
+( y1 == 140 else [ error 'y1 dep 1' ] .)
+
+( y1 = 30 .)
+( x1 == 8 else [ error 'x1 dep 2' ] .)
+( y1 == 30 else [ error 'y1 dep 2' ] .)
+
+dep (: 'x2' 1 [ y2 + 4 sqrt ] )
+dep (: 'y2' 1 [ x2 * ( x2 ) - 4 ] )
+
+( y2 = 12 .)
+( x2 == 4 else [ error 'x2 dep 1' ] .)
+( y2 == 12 else [ error 'y2 dep 1' ] .)
+
+( x2 = 15 .)
+( x2 == 15 else [ error 'x2 dep 2' ] .)
+( y2 == 221 else [ error 'y2 dep 2' ] .)
+
+( x2 += 3 .)
+( y2 == 320 else [ error 'x2 inc 1' ] .)
+( x2 += 3 .)
+( y2 == 437 else [ error 'x2 inc 2' ] .)
+( x2 += 3 .)
+( y2 == 572 else [ error 'x2 inc 3' ] .)
+( x2 += 3 .)
+( y2 == 725 else [ error 'x2 inc 4' ] .)
+
+( y2 -= ( 725 - 572 ) .)
+( x2 == 24 else [ error 'y2 dec 1' ] .)
+( y2 -= ( 572 - 437 ) .)
+( x2 == 21 else [ error 'y2 dec 2' ] .)
+( y2 -= ( 437 - 320 ) .)
+( x2 == 18 else [ error 'y2 dec 3' ] .)
+( y2 -= ( 320 - 221 ) .)
+( x2 == 15 else [ error 'y2 dec 4' ] .)
+
+
+dep (: 'a' 0 [ 10 / ( b + 10 ) ] )
+dep (: 'b' 0 [ 10 / ( a - 30 ) ] )
+dep (: 'c' 0 [ a + ( b ) ] )
+
+( b + ( a ) == ( c ) else [ error 'converge test 1' ] .)
+( 0 != ( a ) else [ error 'converge test 2' ] .)
+( 0 != ( b ) else [ error 'converge test 3' ] .)
+( 0 != ( c ) else [ error 'converge test 4' ] .)
+
+dep (: 'i1' 0 [ i1 < 10 then [ i1 + 1 ] else [ 10 ] ] )
+
+( il = 10 .)
+
+( i1 == 10 else [ error 'count dep' ] .)
+
+dep (: 'i2' 0 [ ( i2 .) 10 ] )
+
+( i = 3 .)
+( i2 == 10 else [ error 'immutable dep' ] .)
+
+var (: 'v2' 0 )
+dep (: 'i2' 10 [ i2 ! ] )
+dep (: 'o2' 10 [ ( i2 ! .) ( v2 += 1 .) ] )
+
+( o2 ! .)
+( v2 == 1 else [ error 'obs dep 1' ] .)
+
+( i2 = 3 .)
+( v2 == 2 else [ error 'obs dep 2' ] .)
+
+( i2 = 3 .)
+( v2 == 2 else [ error 'obs dep 3' ] .)
+
+( i2 = 4 .)
+( v2 == 3 else [ error 'obs dep 4' ] .)
+
+
+dep (: 'o4' ( none has (: 'a1' 5 ) has (: 'a2' 6 ) ) [ o4 ! ] )
+dep (: 'd4' 0 [ o4 a1 + ( o4 a2 ) ] )
+
+( d4 == 11 else [ error 'obs prop 1' ] .)
+
+( o4 a1 += 100 .)
+( d4 == 111 else [ error 'obs prop 2' ] .)
+
+( o4 a2 -= 10 .)
+( d4 == 101 else [ error 'obs prop 3' ] .)
+
+
+dep (: 'x4' 10 [ x4 ! ] )
+
+var (: 'u1' ( none inv (: 'x' 1 [ x4 * 10 ] ) ) )
+
+( u1 x == 100 else [ error 'inv 1' ] .)
+
+( x4 = 11 .)
+( u1 x == 110 else [ error 'inv 2' ] .)
+

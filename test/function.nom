@@ -1,0 +1,52 @@
+
+defun (: 'f1' ( number ) [
+  that + 1
+] )
+
+( f1 10 == 11 else [ error 'f1' ] .)
+
+defun (: 'f2' ( set ) [
+  list ( number ) 1 merge ( that ) 10
+] )
+
+( f2 ( list ( number ) 4 5 6 ) == (: 1 4 5 6 10 ) else [ error 'f2' ] .)
+
+defun (: 'f3' ( param (: (: 'p1' ( number ) ) (: 'p2' ( number ) ) ) ) [
+  that p1 + ( that p2 ) / 2
+] )
+
+( f3 (: 10 20 ) == 15 else [ error 'f3' ] .)
+
+var (: 'f4' ( f3 ) )
+
+( f4 (: 10 30 ) == 20 else [ error 'f4' ] .)
+
+var (: 'f5' ( fun (: ( number ) [
+  that * ( that )
+] ) ) )
+
+( f5 9 == 81 else [ error 'f5' ] .)
+
+var (: 'f6' ( fun (: ( number ) [
+  this + ( that ) / 2
+] ) ) )
+
+( f6 apply 40 20 == 30 else [ error 'f6' ] .)
+
+defun (: 'f7' ( number ) [
+  var (: 'v' ( that * 10 ) )
+  fun (: ( number ) [
+    that + ( v )
+  ] )
+] )
+
+( f7 9 4 == 94 else [ error 'f7' ] .)
+
+var (: 'f8' ( fun (: ( fun ) [
+  that 5
+] ) ) )
+
+( f8 ( f7 9 ) == 95 else [ error 'f8' ] .)
+
+
+

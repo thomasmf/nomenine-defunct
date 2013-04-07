@@ -1,0 +1,20 @@
+
+var (: 'n' 0 )
+
+loop [
+  100 >= ( n ++ ) else [ stop ]
+  mod 15 == 0 then [
+    console write 'fizzbuzz' newl
+  ] else [
+    n mod 3 == 0 then [
+      console write 'fizz' newl
+    ] else [
+      n mod 5 == 0 then [
+        console write 'buzz' newl
+      ] else [
+        console write ( n ) newl
+      ]
+    ]
+  ]
+]
+

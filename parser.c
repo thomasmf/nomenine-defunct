@@ -33,18 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "utils.h"
 #include "parser.h"
 
-
-ANY listLITERALfactory( ANY list_proto ) {
-  LIST list = newLIST( C(LIST,list_proto)->type, 0, c(REFS,NULL) ) ;
-  listMERGE( list, C(LIST,list_proto) ) ;
-  return any(list) ;
-}
-
-ANY numberLITERALfactory( ANY number_proto ) {
-  NUMBER number = newNUMBER( C(NUMBER,number_proto)->data ) ;
-  return any(number) ;
-}
-
 ANY PARSE_string( n_integer *i, n_string source ) {
   n_character x ;
   n_integer last = (*i) ;
@@ -75,9 +63,10 @@ ANY PARSE_token( n_integer *i, n_string source ) {
       n_string r ;
       n_float n = strtod( token, &r ) ;
       if ( *r == '\0' ) {
-        return any(newLITERAL( numberLITERALfactory, any(newNUMBER( n )) )) ;
+        return any(newNUMBER( n )) ;
+//        return any(newLITERAL( numberLITERALfactory, any(newNUMBER( n )) )) ;
       } else {
-        return any(wordNEW( token )) ;
+        return any(newWORD( widNEW( token ) )) ;
       }
     }
   }
@@ -99,7 +88,8 @@ ANY PARSE_quote( n_integer *i, n_string source ) {
     } else if ( x == '[' ) {
       listAPPEND( tokens, ref(PARSE_quote( i, source )) ) ;
     } else if ( x == ']' ) {
-      return any(newLITERAL( listLITERALfactory, any(tokens) )) ;
+      return any(tokens) ;
+//      return any(newLITERAL( listLITERALfactory, any(tokens) )) ;
     } else if ( x == '\'' ) {
       listAPPEND( tokens, ref(PARSE_string( i, source )) ) ;
     } else if ( ( x > 0x20 ) && ( x < 0x7f ) ) {

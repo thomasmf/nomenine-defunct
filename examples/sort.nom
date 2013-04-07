@@ -1,8 +1,8 @@
 
 defun (: 'sort' ( set ) [
 
-  def (: 'elements' ( that each ) )
-  def (: 'pivot' ( elements next else [ return [] ] ) )
+  var (: 'elements' ( that each ) )
+  var (: 'pivot' ( elements next else [ return [] ] ) )
   var (: 'low' [] )
   var (: 'high' [] )
 
@@ -12,11 +12,11 @@ defun (: 'sort' ( set ) [
     else [ low ( elements value ) ]
   ]
 
-  sort ( low ) ( pivot ) merge( sort ( high ) )
+  sort ( low ) ( pivot ) merge ( sort ( high ) )
 
 ] )
 
-def (: 'l' (: 3 2 8 2 5 2 1 2 7 2 4 2 3 ) )
+var (: 'l' (: 3 2 8 2 5 2 1 2 7 2 4 2 3 ) )
 
 ( console write
   'Unsorted list' tab	': ' ( l join ', ' )		newl

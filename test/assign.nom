@@ -1,0 +1,74 @@
+
+var (: 'o1' ( none has (: 'x' 101 ) has (: 'y' 102 ) ) )
+var (: 'o2' ( none has (: 'x' 201 ) has (: 'y' 202 ) ) )
+
+var (: 'o3' ( none has (: 'x' 301 ) has (: 'y' 302 ) ) )
+var (: 'o4' ( none is ( o3 ) has (: 'z' 403 ) ) )
+
+( o1 x == 101 else [ error 'state o1 x' ] .)
+( o1 y == 102 else [ error 'state o1 y' ] .)
+
+( o1 = ( o2 ) .)
+
+( o1 x == 201 else [ error 'assign o1 x' ] .)
+( o1 y == 202 else [ error 'assign o1 y' ] .)
+
+( o4 x == 301 else [ error 'state o4 x' ] .)
+( o4 y == 302 else [ error 'state o4 y' ] .)
+( o4 z == 403 else [ error 'state o4 z' ] .)
+
+( o4 = ( o2 ) .)
+
+( o4 x == 201 else [ error 'assign o4 x' ] .)
+( o4 y == 202 else [ error 'assign o4 y' ] .)
+( o4 z == 403 else [ error 'assign o4 z' ] .)
+
+defact (: 'f1' ( number ) [
+  none
+  has (: 'a' ( that ) )
+  has (: 'x' 1000 )
+] )
+
+defact (: 'f2' ( number ) [
+  none
+  has (: 'b' ( that ) )
+  is ( f1 602 )
+  has (: 'y' 2000 )
+] )
+
+var (: 'o6' ( f2 602 ) )
+
+( o6 = ( o2 ) .)
+
+( o6 x == 201 else [ error 'assign o6 x' ] .)
+( o6 y == 202 else [ error 'assign o6 y' ] .)
+( o6 a == 602 else [ error 'assign o6 a' ] .)
+( o6 b == 602 else [ error 'assign o6 b' ] .)
+
+( o6 x == ( o6 x ) else [ error 'compare o6 1' ] .)
+( o6 == ( o6 ) else [ error 'compare o6 2' ] .)
+( o2 == ( o6 ) else [ error 'compare o6 3' ] .)
+
+( o1 x = 444 .)
+( o1 == ( o6 ) then [ error 'compare 06 4' ] .)
+
+var (: 'o7' ( f1 1000 ) )
+
+( o7 == ( f1 1000 ) else [ error 'compare o7' ] .)
+( f1 1000 == ( o7 ) else [ error 'compare o7' ] .)
+
+( 123 clone else [ error 'number clone' ] .)
+( 123 clone clone else [ error 'number clone clone' ] .)
+
+( o2 clone else [ error 'o2 clone' ].)
+( o2 clone clone else [ error 'o2 clone clone' ].)
+( o2 clone clone clone else [ error 'o2 clone clone clone' ].)
+( o2 == ( o2 clone ) else [ error 'o2 clone compare' ] .)
+
+( o4 clone x else [ error 'o4 clone x' ] .)
+( o4 clone y else [ error 'o4 clone y' ] .)
+( o4 clone z else [ error 'o4 clone z' ] .)
+
+( o6 clone x else [ error 'o6 clone x' ] .)
+( o6 clone y else [ error 'o6 clone y' ] .)
+

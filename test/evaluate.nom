@@ -1,0 +1,14 @@
+
+
+defun (: 'tf' ( any ) [
+  ( that > 0 else [ return ( none ) ] .)
+  ( var (: 'a' ( that ) ) .)
+  ( a throw .)
+  ( tf ( that - 1 ) .)
+  ( a throw .)
+] )
+
+(: 3 2 1 1 2 3 == ( gen (: ( number ) [ tf 3 ] ) ) else [ error 'scope nesting' ] .)
+
+
+

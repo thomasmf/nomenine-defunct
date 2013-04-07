@@ -1,0 +1,15 @@
+
+catch (: ( number ) [
+  that * 2
+] )
+
+( 123 throw == 246 else [ error 'throw' ] .)
+
+defun (: 'f' ( number ) [
+  ( 444 throw == 888 else [ error 'throw from function' ] .)
+  that * 3
+] )
+
+( f 111 == 333 else [ error 'return from function' ] .)
+
+

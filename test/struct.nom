@@ -1,0 +1,27 @@
+
+var (: 's1' ( struct (:
+  (: 'a' ( number ) )
+  (: 'b' ( number ) )
+) ) )
+
+var (: 'v1' ( s1 (: 7 8 ) ) )
+
+( v1 a == 7 else [ error 'v1 a' ] .)
+( v1 b == 8 else [ error 'v1 b' ] .)
+
+defun (: 'f1' ( s1 ) [
+  that a * ( that b )
+] )
+
+( f1 ( v1 ) == 56 else [ error 'f1 ( v1 )' ] .)
+
+( f1 3 then [ error 'f1 3' ] .)
+
+( v1 = ( s1 (: 3 4 ) ) .)
+
+( v1 b = 14 .)
+
+( v1 == ( s1 (: 3 14 ) ) else [ error 'struct assign/compare' ] .)
+
+
+

@@ -30,5 +30,3 @@ var (: 'primes-set' (
   ] )
 ) )
 
-( console write ( until-ceiling (: 123 ( primes-set ) ) ) newl .)
-

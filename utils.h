@@ -40,31 +40,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define C( _t, _o ) ((_t)( TYPE_ERROR( _t##_type, (_o) ) ))
 
-#define TT( _s, _n ) newTASK( ref(newTEST( _s )), task->context, task->result, _n, _n )
-
 #define TYPE_RESPONSE(_c1) { if ( c( n_integer, task->context->that->value ) == c( n_integer, _c1->id ) ) { task->result->value = THIS_R->value ; task->result->svalue = THIS_R->svalue ; task->result->type = THIS_R->type ; task->next = task->exit ; } }
-
 
 #define CONTINUE { return ; }
 
 #define RETURN( _o... ) { RSET( task->result, (_o) ) ; task->next = task->exit ; CONTINUE ; }
 
-#define IFWORD( w, p ) { if ( PTHAT == any(w) ) { { p } ; CONTINUE ; } }
+#define IFWID( w, p ) { if ( PTHAT == any(w) ) { { p } ; CONTINUE ; } }
 #define IFTYPE( c, p... ) { if ( PTHAT->objective == c->instance_objective ) { { p } ; CONTINUE ; } }
 #define IFADDR( o1, p... ) { if ( PTHAT == any(o1) ) { { p } ; CONTINUE ; } }
 
-#define ONWORD( w, o... ) { if ( PTHAT == any(C(WORD,w)) ) { RETURN( o ) ; } }
+#define ONWID( w, o... ) { if ( PTHAT == any(C(WID,w)) ) { RETURN( o ) ; } }
 #define ONTYPE( c, o... ) { if ( PTHAT->objective == c->instance_objective ) RETURN( o ) ; }
 #define ONADDR( o1, o2... ) { if ( PTHAT == any(o1) ) RETURN( o2 ) ; }
 
-#define ATTRIB( w, o... ) ONWORD( w, o )
-#define METHOD( w1, c1, n1 ) { ATTRIB( w1, newAPPLICATOR( THIS_R, ref(newFUNCTION( c1, any(n1) )) ) ) ; }
-#define METHOP( w1, f1 ) { ATTRIB( w1, newAPPLICATOR( THIS_R, ref(f1) ) ) ; }
+#define METHOD( w1, c1, n1 ) { ONWID( w1, newAPPLICATOR( THIS_R, ref(newFUNCTION( c1, any(n1) )) ) ) ; }
+#define METHOP( w1, f1 ) { ONWID( w1, newAPPLICATOR( THIS_R, ref(f1) ) ) ; }
 
-#define NOMOREWORDS { IFTYPE( WORD_type ) ; IFTYPE( ID_type ) ; }
-
-#define STR( s ) ( #s )
-
+#define NOMOREWIDS { IFTYPE( WID_type ) ; IFTYPE( TID_type ) ; }
 
 #define RDSET( _r, _v, _sv ) rdset_f( (_r), any(_v), any(_sv) )
 #define RSET( _r, _v ) rset_f( (_r), any(_v) )
@@ -75,68 +68,34 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define PTHIS (task->context->this->value)
 #define PTHAT (task->context->that->value)
 
-#define DO_LITERAL \
-  IFTYPE( LITERAL_type,											\
-    task->next = RETO( task, task->context->this, ref(C(LITERAL,PTHAT)->factory(C(LITERAL,PTHAT)->data)), task->next ) ;	\
-  ) ;														\
-
-
-#define DO_EVALUATE \
-  IFTYPE( PHRASE_type,												\
-    REFERENCE r2 = ref(NONE) ;											\
-    task->next = newTASK(											\
-      ref(newEVALUATE(												\
-        task->context->closure,											\
-        ref(task->context->closure),										\
-        c(SET,C(PHRASE,PTHAT)->value)										\
-      )), task->context, r2,											\
-      RETO( task, task->context->this, r2, task->next ),							\
-    task->exit ) ;												\
-  ) ;														\
-
 #define DO_TYPE \
     DO_TYPE_ID_TEST ;												\
     DO_COMMON ;													\
 
-#define DO_CONDITIONS \
+#define DO_COMMON \
+    ONWID( WI_DOT, IGNORE ) ;											\
+    ONADDR( IGNORE, THIS ) ;											\
     METHOD( WI_then, SET_type, newTHENaction() ) ;								\
     METHOD( WI_else, SET_type, newELSEaction() ) ;								\
-
-#define DO_CORE \
-    ATTRIB( WI_DOT, IGNORE ) ;											\
-    ONADDR( IGNORE, THIS ) ;											\
-    ATTRIB( WI_EXCLAIM, newNOUN( task->context->this ) ) ;							\
-
-#define DO_NOB \
-    DO_EVALUATE ;												\
-    DO_CORE ;													\
-
-#define DO_DEBUG \
-    ATTRIB( WI_delog, printf( "::::\t\t\t%s\n", DEBUG( THIS ) ), PTHIS ) ;					\
-
-#define DO_COMMON \
-    DO_LITERAL ;												\
-    DO_NOB ;													\
-    DO_CONDITIONS ;												\
-    DO_DEBUG ;													\
-    METHOP( WI_has, newIS( any(newFUNCTION( PARAMwa, any(newHASaction_wa()) )), any(newFUNCTION( PARAMwca, any(newHASaction_wca()) )) ) ) ;					\
+    ONWID( WI_delog, printf( "::::\t\t\t%s\n", DEBUG( THIS ) ), PTHIS ) ;					\
+    METHOD( WI_has, PARAMwa, newHASaction_wa()) ;								\
     METHOD( WI_is, ANY_type, newISaction() ) ;									\
     METHOD( WI_gets, PARAMcs, newGETSaction() ) ;								\
-    METHOP( WI_does, newIS( any(newFUNCTION( PARAMwcs, any(newDOESaction_wcs()) )), any(newFUNCTION( PARAMwf, any(newDOESaction_wf()) )) ) ) ;					\
+    METHOP( WI_does, newIS( ref(newFUNCTION( PARAMwcs, any(newDOESaction_wcs()) )), ref(newFUNCTION( PARAMwf, any(newDOESaction_wf()) )) ) ) ;					\
     METHOD( WI_noms, PARAMws, newNOMSaction() ) ;								\
-    IFWORD( WI_throw, task->next = RETO( task, task->context->closure->field, task->context->this, task->next ) ; ) ;
+    METHOP( WI_inv, newIS( ref(newFUNCTION( PARAMws, any(newINVaction_ws()) )), ref(newFUNCTION( PARAMwas, any(newINVaction_was()) )) ) ) ; \
+    IFWID( WI_throw, task->next = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, task->context->this ), task->result, task->next, task->exit ) ; ) ; \
+    ONWID( WI_en, ref(THIS) ) ;
 
 
-
-#define ASPRINT( _r, _arg... ) { \
-  n_string s ;	/*This macro is the core.*/	\
-  asprintf( &s, _arg ) ;			\
-  n_integer l = strlen( s ) ;			\
-  n_string b = (n_string)allocate( l ) ; 	\
-  strncpy( b, s, l ) ;				\
-  free( s ) ;					\
-  (_r)->value = any(newSTRING( b )) ;		\
+#define USE_ON( _cont, _obj ) {	\
+  if ( (_obj)->objective == OBSERVER_type->instance_objective ) {	\
+    task->_cont = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, ref(C(OBSERVER,(_obj))->dep) ), ref(NONE), task->_cont, task->_cont ) ;	\
+  }	\
 }
+
+#define MOD_ON( _cont, _obj ) { if ( (_obj)->objective == OBSERVER_type->instance_objective ) { task->_cont = newTASK( ref(C(OBSERVER,_obj)->dep), newCONTEXT( task->context->closure, ref(C(OBSERVER,_obj)->dep), ref(WI_modified) ), task->result, task->_cont, task->_cont ) ; } }
+
 
 inline STRING STRX( n_string fmt, ... ) ;
 
@@ -156,19 +115,22 @@ inline ANY type_error( TYPE c, ANY o, n_string f, n_integer l ) ;
 inline void error( n_string m, n_boolean v, n_string f, n_integer l ) ;
 
 inline TASK REC( TASK task, TYPE class, REFERENCE this, REFERENCE action, TASK next ) ;
-inline TASK REP( TASK task, REFERENCE object, TASK next ) ;
-inline TASK REX( TASK task, REFERENCE object, TASK next ) ;
-inline TASK RETO( TASK task, REFERENCE this, REFERENCE that, TASK next ) ;
-inline TASK RETA( TASK task, REFERENCE action, REFERENCE this, REFERENCE that, TASK next ) ;
-
 
 #define tupleNEW() newTUPLE( ANY_type, 0, c(REFS,NULL) )
 inline n_void tupleAPPEND( TUPLE l, REFERENCE e ) ;
 #define listNEW( x ) newLIST( (x), 0, c(REFS,NULL) )
 inline n_void listAPPEND( LIST l, REFERENCE e ) ;
 inline LIST listMERGE( LIST l1, LIST l2 ) ;
+inline n_boolean listHASELEMENT( LIST l, REFERENCE e ) ;
+inline n_void listREMOVEELEMENT( LIST l, REFERENCE e ) ;
 
-inline WORD wordNEW( n_string s ) ;
+
+inline OBSERVER obsNEW( OBSERVER o1, REFERENCE o2 ) ;
+inline n_void depREEVALUATE( TASK task, DEPENDENCY dep ) ;
+inline n_void depPROPAGATE( TASK task, DEPENDENCY dep ) ;
+inline n_void depRESET( DEPENDENCY dep ) ;
+
+inline WID widNEW( n_string s ) ;
 
 inline ITERATOR iteratorNEW( TASK task, TYPE class, SET l, CLOSURE closure ) ;
 
@@ -176,7 +138,7 @@ CLOSURE ROOT ;
 NONETYPE NONE ;
 IGNORETYPE IGNORE ;
 REFERENCE UNUSED ;
-LIST WORDS ;
+LIST WIDS ;
 CONSOLE CONSOLEOBJECT ;
 LOOPstopTYPE LOOPstop ;
 
@@ -185,12 +147,17 @@ ANY FACTfact ;
 ANY ASSORTfact ;
 ANY PARAMfact ;
 ANY MODULEfact ;
+ANY STATICfact ;
+ANY WORDfact ;
+ANY PHRASEfact ;
 
+TYPE PARAMas ;
 TYPE PARAMwa ;
 TYPE PARAMwc ;
 TYPE PARAMws ;
 TYPE PARAMwf ;
 TYPE PARAMwca ;
 TYPE PARAMwcs ;
+TYPE PARAMwas ;
 TYPE PARAMcs ;
 

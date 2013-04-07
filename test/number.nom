@@ -1,0 +1,13 @@
+
+( 1 + 2 == 3 else [ error 'addition' ] .)
+( 3 - 2 == 1 else [ error 'substraction' ] .)
+( 2 * 3 == 6 else [ error 'multiplication' ] .)
+( 6 / 2 == 3 else [ error 'divition' ] .)
+
+( 2 > 1 == 1 else [ error 'greater than' ] .)
+( 2 >= 2 == 2 else [ error 'greater or equal' ] .)
+( 3 == 3 == 3 else [ error 'equals' ] .)
+
+( 6 += 2 == 8 else [ error 'increase by n' ] .)
+( 6 -= 2 == 4 else [ error 'decrease by n' ] .)
+

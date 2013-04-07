@@ -41,8 +41,8 @@ def BUILD() :
   for c in T.classes ] ) )
 
   result_h += ( ''.join( [
-    '\nWORD WI_' + stringtocid( w ) + ' ;'
-  for w in T.words ] ) )
+    '\nWID WI_' + stringtocid( w ) + ' ;'
+  for w in T.wids ] ) )
 
   result_h += ( ''.join( [
     '\ninline ' + c.name + ' new' + c.name + '( ' +
@@ -95,14 +95,14 @@ def BUILD() :
 
   result_h += '\nn_void INITIALIZE_' + META.NAME + '_TYPES() ;'
   result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_TYPES() {' + ( ''.join( [
-    '\n  ' + c.name + '_type = newTYPE( newID(), ' + c.name + '_objective, any(NONE), any(NONE) ) ; '
+    '\n  ' + c.name + '_type = newTYPE( newTID(), ' + c.name + '_objective, any(NONE), any(NONE) ) ; '
   for c in T.classes ] ) ) + '\n}' )
 
-  result_h += '\nn_void INITIALIZE_' + META.NAME + '_WORDS() ;'
-  result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_WORDS() {' +
-    '\n  WORDS = listNEW( WORD_type ) ; ' + ( ''.join( [
-    '\n  WI_' + stringtocid( w ) + ' = wordNEW( "' + w + '" ) ; '
-  for w in T.words ] ) ) + '\n}' )
+  result_h += '\nn_void INITIALIZE_' + META.NAME + '_WIDS() ;'
+  result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_WIDS() {' +
+    '\n  WIDS = listNEW( WID_type ) ; ' + ( ''.join( [
+    '\n  WI_' + stringtocid( w ) + ' = widNEW( "' + w + '" ) ; '
+  for w in T.wids ] ) ) + '\n}' )
 
   result_h += '\n\n'
   result_c += '\n\n'
@@ -122,7 +122,7 @@ class A:
 
 class T:
   classes = []
-  words = []
+  wids = []
   def __init__( self, name, t1 = None, t2 = None, attributes = (), objective = "", debug = D() ) :
     self.name = name
     self.t1 = t1
@@ -141,8 +141,8 @@ def stringtocid( s ) :
     s = s.replace( a, b )
   return s
 
-def W( *words ) :
-  T.words = words
+def W( *wids ) :
+  T.wids = wids
 
 class X:
   def __init__( self, n, c ) :
@@ -181,6 +181,7 @@ def P( name, *parameters ) :
         REFERENCE %(name)s_ref_ref = ref(%(name)s_ref) ;
       """ % { 'name':p.n, 'cls':p.c } for p in parameters ] ) ),
     'check': ( ''.join( [ """
+//        LOG( %(name)s_ref_ref ) ;
         CONTEXT c%(name)s = newCONTEXT( task->context->closure, %(name)s_ref_ref, ref(newNOUN( C(TUPLE,THIS->tuple->value)->data[%(i)s] )) ) ;
         task->next = newTASK( %(name)s_ref_ref, c%(name)s, ref(NONE), task->next, task->next ) ;
     """ % { 'i':i, 'name':parameters[i].n } for i in range( len(parameters) ) ] ) )
@@ -207,7 +208,7 @@ def P( name, *parameters ) :
     DO_TYPE ;
     %(attr)s
   """ % { 'attr': ( ''.join( [ """
-    ATTRIB( WI_%(p)s, THIS->%(p)s_ref->value ) ;
+    ONWID( WI_%(p)s, THIS->%(p)s_ref->value ) ;
   """ % { 'p':p.n } for p in parameters ] ) ) } )
 
 

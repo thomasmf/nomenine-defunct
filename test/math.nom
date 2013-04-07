@@ -1,0 +1,5 @@
+
+use ( module 'modules/math-utils.nom' )
+
+( until-ceiling (: 20 ( primes-set ) ) == (: 2 3 5 7 11 13 17 19 ) else [ error 'primes set' ] .)
+

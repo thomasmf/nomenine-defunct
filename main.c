@@ -54,29 +54,37 @@ int main( int argc, const char* argv[] ) {
   NONE = newNONETYPE() ;
 
   INITIALIZE_core_TYPES() ;
-  INITIALIZE_core_WORDS() ;
+  INITIALIZE_core_WIDS() ;
 
   IGNORE = newIGNORETYPE() ;
   UNUSED = ref(NONE) ;
   LOOPstop = newLOOPstopTYPE() ;
   CONSOLEOBJECT = newCONSOLE() ;
 
-  ROOT = newCLOSURE( c(CLOSURE,NONE), ref(NONE), ref(NONE), ref(newROOTOBJECT()), ref(NONE) ) ;
+  ROOT = newCLOSURE( c(CLOSURE,NONE), ref(newCONTEXT( c(CLOSURE,NONE), ref(NONE), ref(NONE) )), ref(newROOTOBJECT()), ref(NONE) ) ;
   ROOT->parent = ROOT ;
 
-  PARAMwa = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwa_assort()) ) ;
-  PARAMwc = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwc_assort()) ) ;
-  PARAMws = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMws_assort()) ) ;
-  PARAMwf = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwf_assort()) ) ;
-  PARAMwca = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwca_assort()) ) ;
-  PARAMwcs = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMwcs_assort()) ) ;
-  PARAMcs = newTYPE( newID(), c(n_objective,NULL), any(NONE), any(newPARAMcs_assort()) ) ;
+  PARAMas = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMas_assort()) ) ;
+  PARAMwa = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwa_assort()) ) ;
+  PARAMwc = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwc_assort()) ) ;
+  PARAMws = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMws_assort()) ) ;
+  PARAMwf = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwf_assort()) ) ;
+  PARAMwca = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwca_assort()) ) ;
+  PARAMwcs = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwcs_assort()) ) ;
+  PARAMwas = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwas_assort()) ) ;
+  PARAMcs = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMcs_assort()) ) ;
 
   CATfact = any(newFUNCTION( SET_type, any(newCATconst()) )) ;
   FACTfact = any(newFUNCTION( ANY_type, any(newFACTconst()) )) ;
   ASSORTfact = any(newFUNCTION( TUPLE_type, any(newASSORTconst()) )) ;
+
   PARAMfact = any(newFUNCTION( TUPLE_type, any(newPARAMconst()) )) ;
   MODULEfact = any(newFUNCTION( STRING_type, any(newMODULEconst()) )) ;
+
+  STATICfact = any(newIS( ref(newFUNCTION( PARAMas, any(newSTATICconst_as()) )), ref(newFUNCTION( SET_type, any(newSTATICconst_s()) )) )) ;
+
+  WORDfact = any(newFUNCTION( STRING_type, any(newWORDconst()) )) ;
+  PHRASEfact = any(newFUNCTION( SET_type, any(newPHRASEconst()) )) ;
 
   FUNCTION_type->constructor = any(newFUNCTION( PARAMcs, any(newFUNCTIONconst()) )) ;
   LIST_type->constructor = any(newFUNCTION( TYPE_type, any(newSETCUSTOMLIST()) )) ;
@@ -101,8 +109,8 @@ int main( int argc, const char* argv[] ) {
     task = task->next ;
     if ( !NOTNONE( task ) ) break ;
 
-    ATTRIB( WI_tron, ( trace_state = TRUE, task->context->this ) ) ;
-    ATTRIB( WI_troff, ( trace_state = FALSE, task->context->this ) ) ;
+    ONWID( WI_tron, ( trace_state = TRUE, task->context->this ) ) ;
+    ONWID( WI_troff, ( trace_state = FALSE, task->context->this ) ) ;
 
     task->action->value->objective( task ) ;
 

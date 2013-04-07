@@ -3,6 +3,7 @@ CC=gcc
 CFLAGS=-c -g -Wall -I/usr/include/gc
 
 all:		nominine
+		python test.py
 
 nominine:	core.o utils.o main.o parser.o
 		$(CC) main.o core.o utils.o parser.o -lgc -lm -o nominine
