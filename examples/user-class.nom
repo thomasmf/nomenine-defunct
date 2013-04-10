@@ -16,25 +16,18 @@ defact (: 'vector' ( param (: (: 'x' ( number ) ) (: 'y' ( number ) ) ) ) [
 
 ] )
 
+
 var (: 'v1' ( vector (: 4 7 ) ) )
 
 var (: 'v2' ( vector (: 6 7 ) ) )
+
 var (: 'v3' ( v1 + ( v2 ) ) )
 
 
 ( console write ( v1 ) ' + ' ( v2 ) ' = ' ( v3 ) newl .)
 
-( v1 delog = ( v2 ) delog .)
+
+( v1 = ( v2 ) .)
 
 ( console write ( v1 ) ' == ' ( v2 ) newl .)
-
-( v1 == ( v2 ) delog .)
-( v1 == ( v3 ) delog .)
-
-( console write newl .)
-
-( v1 x delog .)
-( v1 delog clone delog x delog .)
-
-( v1 == ( v1 clone ) delog .)
 

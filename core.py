@@ -759,24 +759,6 @@ T( 'NOMS', None, None, (
 
 	####	static dependencies
 
-T( 'DEPS', None, None, (
-  A( 'REFERENCE', 'rest' ),
-  A( 'WID', 'wid' ),
-  A( 'DEPENDENCY', 'dep' ),
-  A( 'n_boolean', 'initialize' ),
-), """
-  DO_COMMON ;
-
-  if ( task->context->that->value == any(THIS->wid) ) {
-
-    RETURN( newOBSERVER( THIS->dep, THIS->dep->state )) ;
-
-  }
-
-  task->next = newTASK( THIS->rest, task->context, task->result, task->next, task->exit ) ;
-""" )
-
-
 T( 'DEPcatcher', None, None, (
   A( 'REFERENCE', 'rest' ),
   A( 'DEPENDENCY', 'dep' ),
@@ -815,32 +797,21 @@ T( 'DEPaction_was', 'CLOSURE', 'PARAMwas_struct', (), """
 	#	inv (: 'some-symbol' [ ... ] )
 
 T( 'INVaction_ws', None, 'PARAMws_struct', (), """
-  RETURN( newDEPS(
-    task->context->this,
-    widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
-    newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), ref(NONE),
-      newDEFINITION(
-        task->context->closure,
-        any( PSTHAT->s_ref->svalue )
-      ), TRUE
-    ),
-    TRUE
-  ) ) ;
+  RETURN( NONE ) ;
 """ )
 
 	#	inv (: 'some-symbol' ( some-object ) [ ... ] )
 
 T( 'INVaction_was', None, 'PARAMwas_struct', (), """
-  RETURN( newDEPS(
-    task->context->this,
+  RETURN( newHAS(
+    ref( task->context->closure->view->value ),
     widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
-    newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), PSTHAT->a_ref,
+    ref(newOBSERVER( newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), PSTHAT->a_ref,
       newDEFINITION(
         task->context->closure,
         any( PSTHAT->s_ref->svalue )
       ), TRUE
-    ),
-    TRUE
+    ), PSTHAT->a_ref ))
   ) ) ;
 """ )
 

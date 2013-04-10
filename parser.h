@@ -21,10 +21,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define ISTOKENCHAR(x) ( ( x != '[' ) && ( x != ']' ) && ( x != '(' ) && ( x != ')' ) && ( x > 0x20 ) && ( x < 0x7f ) )
 
-ANY listLITERALfactory( ANY list_proto ) ;
-
-ANY numberLITERALfactory( ANY number_proto ) ;
-
 ANY PARSE_string( n_integer *i, n_string source ) ;
 
 ANY PARSE_token( n_integer *i, n_string source ) ;
