@@ -72,20 +72,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     DO_TYPE_ID_TEST ;												\
     DO_COMMON ;													\
 
-#define DO_COMMON \
+#define DO_NOTSOCOMMON \
     ONWID( WI_DOT, IGNORE ) ;											\
     ONADDR( IGNORE, THIS ) ;											\
-    METHOD( WI_then, SET_type, newTHENaction() ) ;								\
-    METHOD( WI_else, SET_type, newELSEaction() ) ;								\
     ONWID( WI_delog, printf( "::::\t\t\t%s\n", DEBUG( THIS ) ), PTHIS ) ;					\
+    METHOD( WI_em, SEQ_type, newEMaction() ) ;									\
+    IFWID( WI_throw, task->next = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, task->context->this ), task->result, task->next, task->exit ) ; ) ; \
+
+#define DO_COMMON \
+    DO_NOTSOCOMMON												\
+    METHOD( WI_then, SEQ_type, newTHENaction() ) ;								\
+    METHOD( WI_else, SEQ_type, newELSEaction() ) ;								\
+    ONWID( WI_en, ref(PTHIS) ) ;										\
     METHOD( WI_has, PARAMwa, newHASaction_wa()) ;								\
     METHOD( WI_is, ANY_type, newISaction() ) ;									\
     METHOD( WI_gets, PARAMcs, newGETSaction() ) ;								\
     METHOP( WI_does, newIS( ref(newFUNCTION( PARAMwcs, any(newDOESaction_wcs()) )), ref(newFUNCTION( PARAMwf, any(newDOESaction_wf()) )) ) ) ;					\
     METHOD( WI_noms, PARAMws, newNOMSaction() ) ;								\
     METHOP( WI_inv, newIS( ref(newFUNCTION( PARAMws, any(newINVaction_ws()) )), ref(newFUNCTION( PARAMwas, any(newINVaction_was()) )) ) ) ; \
-    IFWID( WI_throw, task->next = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, task->context->this ), task->result, task->next, task->exit ) ; ) ; \
-    ONWID( WI_en, ref(THIS) ) ;
 
 
 #define USE_ON( _cont, _obj ) {	\
@@ -132,7 +136,7 @@ inline n_void depRESET( DEPENDENCY dep ) ;
 
 inline WID widNEW( n_string s ) ;
 
-inline ITERATOR iteratorNEW( TASK task, TYPE class, SET l, CLOSURE closure ) ;
+inline ITERATOR iteratorNEW( TASK task, TYPE class, SEQ l, CLOSURE closure ) ;
 
 CLOSURE ROOT ;
 NONETYPE NONE ;
@@ -142,6 +146,7 @@ LIST WIDS ;
 CONSOLE CONSOLEOBJECT ;
 LOOPstopTYPE LOOPstop ;
 
+ANY REFfact ;
 ANY CATfact ;
 ANY FACTfact ;
 ANY ASSORTfact ;

@@ -1,8 +1,8 @@
 
 
-none
+new
 
-does (: 'print-all' ( set ) [
+does (: 'print-all' ( seq ) [
   ( 'print-all' delog .)
   var (: 'elements' ( that each ) )
   loop [
@@ -12,7 +12,7 @@ does (: 'print-all' ( set ) [
 ] )
 
 does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
-  gen (: ( number ) [
+  seq (: ( number ) [
     var (: 'index' ( that from ) )
     loop [
       that to > ( index ++ ) else [ stop ] throw
@@ -21,7 +21,7 @@ does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
 ] )
 
 
-does (: 'sort' ( set ) [
+does (: 'sort' ( seq ) [
 
   var (: 'elements' ( that each ) )
   var (: 'pivot' ( elements next else [ return [] ] ) )

@@ -1,5 +1,5 @@
 
-var (: 'fib-set' (
+var (: 'fib-seq' (
   gen (: ( number ) [
     var (: 'v0' 0 ) var (: 'v1' 1 ) var (: 'v2' 0 )
     loop [
@@ -11,10 +11,10 @@ var (: 'fib-set' (
   ] )
 ) )
 
-defun (: 'getn' ( param (: (: 'n' ( number ) ) (: 'the-set' ( set ) ) ) ) [
+defun (: 'getn' ( param (: (: 'n' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
   gen (: ( number ) [
     var (: 'i' 0 )
-    var (: 'elements' ( that the-set each ) )
+    var (: 'elements' ( that the-seq each ) )
     loop [
       ( that n >= ( i ++ ) else [ stop ] .)
       ( elements next else [ stop ] throw .)
@@ -22,16 +22,16 @@ defun (: 'getn' ( param (: (: 'n' ( number ) ) (: 'the-set' ( set ) ) ) ) [
   ] )
 ] )
 
-defun (: 'ceiling' ( param (: (: 'max' ( number ) ) (: 'the-set' ( set ) ) ) ) [
+defun (: 'ceiling' ( param (: (: 'max' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
   gen (: ( number ) [
-    var (: 'elements' ( that the-set each ) )
+    var (: 'elements' ( that the-seq each ) )
     loop [
       that max > ( elements next else [ stop ] ) then [ elements value throw ]
     ]
   ] )
 ] )
 
-var (: 'first-100' ( getn (: 100 ( fib-set ) ) ) )
+var (: 'first-100' ( getn (: 100 ( fib-seq ) ) ) )
 
 ( console write ( ceiling (: ( 2 pow 52 ) ( first-100 ) ) join ( ',' tab ) ) newl .)
 

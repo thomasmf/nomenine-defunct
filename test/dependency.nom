@@ -61,8 +61,8 @@ dep (: 'i2' 0 [ ( i2 .) 10 ] )
 ( i2 == 10 else [ error 'immutable dep' ] .)
 
 var (: 'v2' 0 )
-dep (: 'i2' 10 [ i2 ! ] )
-dep (: 'o2' 10 [ ( i2 ! .) ( v2 += 1 .) ] )
+var (: 'i2' ( 10 em [ i2 ! ] ) )
+var (: 'o2' ( 10 em [ ( i2 ! .) ( v2 += 1 .) ] ) )
 
 ( o2 ! .)
 ( v2 == 1 else [ error 'obs dep 1' ] .)
@@ -77,8 +77,9 @@ dep (: 'o2' 10 [ ( i2 ! .) ( v2 += 1 .) ] )
 ( v2 == 3 else [ error 'obs dep 4' ] .)
 
 
-dep (: 'o4' ( none has (: 'a1' 5 ) has (: 'a2' 6 ) ) [ o4 ! ] )
-dep (: 'd4' 0 [ o4 a1 + ( o4 a2 ) ] )
+var (: 'o4' ( none has (: 'a1' 5 ) has (: 'a2' 6 ) em [ o4 ! ] ) )
+
+var (: 'd4' ( static (: 0 [ o4 a1 + ( o4 a2 ) ] ) ) )
 
 ( d4 == 11 else [ error 'obs prop 1' ] .)
 
@@ -89,7 +90,7 @@ dep (: 'd4' 0 [ o4 a1 + ( o4 a2 ) ] )
 ( d4 == 101 else [ error 'obs prop 3' ] .)
 
 
-dep (: 'x4' 10 [ x4 ! ] )
+var (: 'x4' ( 10 em [ x4 ! ] ) )
 
 var (: 'u1' ( none inv (: 'x' 1 [ x4 * 10 ] ) ) )
 

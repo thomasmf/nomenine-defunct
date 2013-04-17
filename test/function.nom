@@ -5,7 +5,7 @@ defun (: 'f1' ( number ) [
 
 ( f1 10 == 11 else [ error 'f1' ] .)
 
-defun (: 'f2' ( set ) [
+defun (: 'f2' ( seq ) [
   list ( number ) 1 merge ( that ) 10
 ] )
 

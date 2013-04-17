@@ -74,21 +74,23 @@ int main( int argc, const char* argv[] ) {
   PARAMwas = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwas_assort()) ) ;
   PARAMcs = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMcs_assort()) ) ;
 
-  CATfact = any(newFUNCTION( SET_type, any(newCATconst()) )) ;
+  REFfact = any(newFUNCTION( TYPE_type, any(newREFconst()) )) ;
+
+  CATfact = any(newFUNCTION( SEQ_type, any(newCATconst()) )) ;
   FACTfact = any(newFUNCTION( ANY_type, any(newFACTconst()) )) ;
   ASSORTfact = any(newFUNCTION( TUPLE_type, any(newASSORTconst()) )) ;
 
   PARAMfact = any(newFUNCTION( TUPLE_type, any(newPARAMconst()) )) ;
   MODULEfact = any(newFUNCTION( STRING_type, any(newMODULEconst()) )) ;
 
-  STATICfact = any(newIS( ref(newFUNCTION( PARAMas, any(newSTATICconst_as()) )), ref(newFUNCTION( SET_type, any(newSTATICconst_s()) )) )) ;
+  STATICfact = any(newIS( ref(newFUNCTION( PARAMas, any(newSTATICconst_as()) )), ref(newFUNCTION( SEQ_type, any(newSTATICconst_s()) )) )) ;
 
   WORDfact = any(newFUNCTION( STRING_type, any(newWORDconst()) )) ;
-  PHRASEfact = any(newFUNCTION( SET_type, any(newPHRASEconst()) )) ;
+  PHRASEfact = any(newFUNCTION( SEQ_type, any(newPHRASEconst()) )) ;
 
   FUNCTION_type->constructor = any(newFUNCTION( PARAMcs, any(newFUNCTIONconst()) )) ;
   LIST_type->constructor = any(newFUNCTION( TYPE_type, any(newSETCUSTOMLIST()) )) ;
-  GENERATOR_type->constructor = any(newFUNCTION( PARAMcs, any(newGENERATORconst()) )) ;
+  SEQ_type->constructor = any(newFUNCTION( PARAMcs, any(newGENERATORconst()) )) ;
   STRUCT_type->constructor = any(newFUNCTION( TUPLE_type, any(newSTRUCTconst()) )) ;
 
   STRINGprimitive_type->id = STRING_type->id ;
@@ -101,7 +103,7 @@ int main( int argc, const char* argv[] ) {
   REFERENCE r = ref(NONE) ;
 
   CONTEXT c1 = newCONTEXT( ROOT->parent, ref(NONE), ref(NONE) ) ;
-  TASK t0 = newTASK( ref(newOBJECTIVE( c(SET,program->value), ROOT->view )), c1, r, c(TASK,NONE), c(TASK,NONE) ) ;
+  TASK t0 = newTASK( ref(newOBJECTIVE( c(SEQ,program->value), ROOT->view )), c1, r, c(TASK,NONE), c(TASK,NONE) ) ;
   TASK task = newTASK( ref(NONE), c1, ref(NONE), t0, t0 ) ;
 
   while ( TRUE ) {

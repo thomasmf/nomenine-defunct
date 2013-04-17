@@ -200,7 +200,7 @@ inline n_void depREEVALUATE( TASK task, DEPENDENCY dep ) {
 
   CONTEXT c3 = newCONTEXT( task->context->closure, r2, r1 ) ;
   task->next = newTASK( r2, c3, ref(NONE), task->next, task->next ) ;
-  // mabe mute the assignment from connect
+  // mabe mute the setment from connect
   CONTEXT c2 = newCONTEXT( task->context->closure, dep->state, ref(WI_EQ) ) ;
   task->next = newTASK( dep->state, c2, r2, task->next, task->next ) ;
 
@@ -213,7 +213,7 @@ inline n_void depREEVALUATE( TASK task, DEPENDENCY dep ) {
 
 
   CLOSURE c1 = newCLOSURE( task->context->closure, ref(task->context), ref(dep->definition->closure->view), ref(newDEPcatcher( task->context->closure->field, dep )) ) ;
-  task->next = newTASK( ref(newEVALUATE( c1, ref(c1), c(SET,dep->definition->expression) )), task->context, r1, task->next, task->next ) ;
+  task->next = newTASK( ref(newEVALUATE( c1, ref(c1), c(SEQ,dep->definition->expression) )), task->context, r1, task->next, task->next ) ;
 
   task->next = newTASK( ref(newDEPENDENCYreset( dep )), task->context, task->result, task->next, task->next ) ;
 }
@@ -252,7 +252,7 @@ inline WID widNEW( n_string s ) {
 
 	////	iterator stuff
 
-inline ITERATOR iteratorNEW( TASK task, TYPE type, SET l, CLOSURE closure ) {
+inline ITERATOR iteratorNEW( TASK task, TYPE type, SEQ l, CLOSURE closure ) {
   REFERENCE r1 = refNEW( ITERATOR_type, any(NONE) ) ;
 
   CLOSURE c1 = newCLOSURE( task->context->closure, closure->context, closure->view, ref(newGETS( task->context->closure->field, type, any(newITERATORcatch( r1 )) )) ) ;

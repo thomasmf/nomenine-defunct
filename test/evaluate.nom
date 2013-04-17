@@ -8,7 +8,7 @@ defun (: 'tf' ( any ) [
   ( a throw .)
 ] )
 
-(: 3 2 1 1 2 3 == ( gen (: ( number ) [ tf 3 ] ) ) else [ error 'scope nesting' ] .)
+(: 3 2 1 1 2 3 == ( seq (: ( number ) [ tf 3 ] ) ) else [ error 'scope nesting' ] .)
 
 
 

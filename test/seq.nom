@@ -1,5 +1,5 @@
 
-use ( module 'modules/set-utils.nom' )
+use ( module 'modules/seq-utils.nom' )
 
 (: 1 2 3 length == 3 else [ error 'tuple length' ] .)
 ( list ( number ) 1 2 merge (: 3 4 ) length == 4 else [ error 'list merge length' ] .)

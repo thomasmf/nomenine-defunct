@@ -1,5 +1,5 @@
 
-use ( module 'modules/set-utils.nom' )
+use ( module 'modules/seq-utils.nom' )
 
 
 var (: 'a1' 0 )
@@ -28,9 +28,9 @@ var (: 'a2' 0 )
 ( a2 == 1234 else [ error 'a2' ] .)
 
 
-var (: 'a3' 0 )
+var (: 'a3' 1 )
 
-var (: 'g1' ( gen (: ( number ) [
+var (: 'g1' ( seq (: ( number ) [
   dep (: 'd0' 1 [ d0 ! ] )
   var (: 'i' 10 )
   loop (

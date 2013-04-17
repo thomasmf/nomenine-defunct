@@ -1,5 +1,5 @@
 
-defun (: 'sort' ( set ) [
+defun (: 'sort' ( seq ) [
 
   var (: 'elements' ( that each ) )
   var (: 'pivot' ( elements next else [ return [] ] ) )

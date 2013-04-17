@@ -1,23 +1,23 @@
 
-defun (: 'until-ceiling' ( param (: (: 'max' ( number ) ) (: 'the-set' ( set ) ) ) ) [
-  gen (: ( number ) [
-    var (: 'elements' ( that the-set each ) )
+defun (: 'until-ceiling' ( param (: (: 'max' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
+  seq (: ( number ) [
+    var (: 'elements' ( that the-seq each ) )
     loop [
       that max >= ( elements next else [ stop ] ) else [ stop ] throw
     ]
   ] )
 ] )
 
-defun (: 'dividable' ( param (: (: 'n' ( number ) ) (: 'the-set' ( set ) ) ) ) [
-  var (: 'elements' ( that the-set each ) )
+defun (: 'dividable' ( param (: (: 'n' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
+  var (: 'elements' ( that the-seq each ) )
   loop [
     that n mod ( elements next else [ stop ] ) == 0 then [ return ( elements value ) ]
   ]
   none
 ] )
 
-var (: 'primes-set' (
-  gen (: ( number ) [
+var (: 'primes-seq' (
+  seq (: ( number ) [
     var (: 'known-primes' ( list ( number ) ) )
     var (: 'i' 1 )
     loop [
