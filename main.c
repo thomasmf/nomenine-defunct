@@ -74,27 +74,25 @@ int main( int argc, const char* argv[] ) {
   PARAMwas = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMwas_assort()) ) ;
   PARAMcs = newTYPE( newTID(), c(n_objective,NULL), any(NONE), any(newPARAMcs_assort()) ) ;
 
-  REFfact = any(newFUNCTION( TYPE_type, any(newREFconst()) )) ;
+  CATfact = any(newFUNCTION( SEQ_type, any(newCATconst()), c(WID,NONE), any(NONE) )) ;
+  FACTfact = any(newFUNCTION( ANY_type, any(newFACTconst()), c(WID,NONE), any(NONE) )) ;
+  ASSORTfact = any(newFUNCTION( TUPLE_type, any(newASSORTconst()), c(WID,NONE), any(NONE) )) ;
 
-  CATfact = any(newFUNCTION( SEQ_type, any(newCATconst()) )) ;
-  FACTfact = any(newFUNCTION( ANY_type, any(newFACTconst()) )) ;
-  ASSORTfact = any(newFUNCTION( TUPLE_type, any(newASSORTconst()) )) ;
+  PARAMfact = any(newFUNCTION( TUPLE_type, any(newPARAMconst()), c(WID,NONE), any(NONE) )) ;
+  MODULEfact = any(newFUNCTION( STRING_type, any(newMODULEconst()), c(WID,NONE), any(NONE) )) ;
 
-  PARAMfact = any(newFUNCTION( TUPLE_type, any(newPARAMconst()) )) ;
-  MODULEfact = any(newFUNCTION( STRING_type, any(newMODULEconst()) )) ;
+  STATICfact = any(newFUNCTION( SEQ_type, any(newSTATICconst_s()), c(WID,NONE), any(NONE) )) ;
 
-  STATICfact = any(newIS( ref(newFUNCTION( PARAMas, any(newSTATICconst_as()) )), ref(newFUNCTION( SEQ_type, any(newSTATICconst_s()) )) )) ;
+  WORDfact = any(newFUNCTION( STRING_type, any(newWORDconst()), c(WID,NONE), any(NONE) )) ;
+  PHRASEfact = any(newFUNCTION( SEQ_type, any(newPHRASEconst()), c(WID,NONE), any(NONE) )) ;
 
-  WORDfact = any(newFUNCTION( STRING_type, any(newWORDconst()) )) ;
-  PHRASEfact = any(newFUNCTION( SEQ_type, any(newPHRASEconst()) )) ;
-
-  FUNCTION_type->constructor = any(newFUNCTION( PARAMcs, any(newFUNCTIONconst()) )) ;
-  LIST_type->constructor = any(newFUNCTION( TYPE_type, any(newSETCUSTOMLIST()) )) ;
-  SEQ_type->constructor = any(newFUNCTION( PARAMcs, any(newGENERATORconst()) )) ;
-  STRUCT_type->constructor = any(newFUNCTION( TUPLE_type, any(newSTRUCTconst()) )) ;
+  FUNCTION_type->constructor = any(newFUNCTION( PARAMcs, any(newFUNCTIONconst()), c(WID,NONE), any(NONE) )) ;
+  LIST_type->constructor = any(newFUNCTION( TYPE_type, any(newSETCUSTOMLIST()), c(WID,NONE), any(NONE) )) ;
+  SEQ_type->constructor = any(newFUNCTION( SEQ_type, any(newGENERATORconst()), c(WID,NONE), any(NONE) )) ;
+  STRUCT_type->constructor = any(newFUNCTION( TUPLE_type, any(newSTRUCTconst()), c(WID,NONE), any(NONE) )) ;
 
   STRINGprimitive_type->id = STRING_type->id ;
-  STRING_type->constructor = any(newFUNCTION( STRING_type, any(newSTRINGconst()) )) ;
+  STRING_type->constructor = any(newFUNCTION( STRING_type, any(newSTRINGconst()), c(WID,NONE), any(NONE) )) ;
   STRING_type->comparator = any(newSTRINGcat()) ;
 
   n_integer parse_index = 0 ;

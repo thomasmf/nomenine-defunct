@@ -76,7 +76,7 @@ ANY PARSE( n_integer *i, n_string source ) ;
 
 ANY PARSE_quote( n_integer *i, n_string source ) {
   n_character x ;
-  LIST tokens = listNEW( ANY_type ) ;
+  LIST tokens = listNEW ;
   while( TRUE ) {
     x = source[ (*i)++ ] ;
     if ( x == 0 ) {
@@ -100,7 +100,7 @@ ANY PARSE_quote( n_integer *i, n_string source ) {
 
 ANY PARSE( n_integer *i, n_string source ) {
   n_character x ;
-  LIST tokens = listNEW( ANY_type ) ;
+  LIST tokens = listNEW ;
   while( TRUE ) {
     x = source[ (*i)++ ] ;
     if ( x == 0 ) {

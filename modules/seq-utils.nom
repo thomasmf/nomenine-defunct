@@ -12,12 +12,12 @@ does (: 'print-all' ( seq ) [
 ] )
 
 does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
-  seq (: ( number ) [
+  seq [
     var (: 'index' ( that from ) )
     loop [
-      that to > ( index ++ ) else [ stop ] throw
+      yield ( that to > ( index ++ ) else [ stop ] )
     ]
-  ] )
+  ]
 ] )
 
 
@@ -25,8 +25,8 @@ does (: 'sort' ( seq ) [
 
   var (: 'elements' ( that each ) )
   var (: 'pivot' ( elements next else [ return [] ] ) )
-  var (: 'low' [] )
-  var (: 'high' [] )
+  var (: 'low' ( [] en ) )
+  var (: 'high' ( [] en ) )
 
   loop [
     elements next else [ stop ] > ( pivot )

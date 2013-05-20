@@ -1,6 +1,6 @@
 
 CC=gcc
-CFLAGS=-c -g -Wall -I/usr/include/gc
+CFLAGS=-c -g -O0 -Wall -I/usr/include/gc
 
 all:		nominine
 		python test.py

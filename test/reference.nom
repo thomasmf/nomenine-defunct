@@ -1,9 +1,0 @@
-
-( ref ( string ) = ( 'asdf' en ) else [ error 'ref 1' ] .)
-
-( ref ( string ) = ( 2345 en ) else [ error 'ref 2' ] .)
-
-( ref ( number ) = ( 'asdf' en ) then [ error 'ref 3' ] .)
-
-( ref ( number ) = ( 2345 en ) else [ error 'ref 4' ] .)
-

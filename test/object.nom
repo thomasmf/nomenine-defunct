@@ -1,0 +1,14 @@
+
+var (: 'o' ( new
+  does (: 'mo' ( param (: (: 'x' ( number ) ) (: 'y' ( number ) ) ) ) [
+    that x * ( that y )
+  ] )
+  does (: 'mo' ( number ) [
+    that * ( that )
+  ] )
+) )
+
+( o mo (: 4 5 ) == 20 else [ error 'o mo 1' ] .)
+
+( o mo 4 == 16 else [ error 'o mo 2' ] .)
+

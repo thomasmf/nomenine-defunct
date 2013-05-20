@@ -54,7 +54,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ONTYPE( c, o... ) { if ( PTHAT->objective == c->instance_objective ) RETURN( o ) ; }
 #define ONADDR( o1, o2... ) { if ( PTHAT == any(o1) ) RETURN( o2 ) ; }
 
-#define METHOD( w1, c1, n1 ) { ONWID( w1, newAPPLICATOR( THIS_R, ref(newFUNCTION( c1, any(n1) )) ) ) ; }
+#define METHOD( w1, c1, n1 ) { ONWID( w1, newAPPLICATOR( THIS_R, ref(newFUNCTION( c1, any(n1), c(WID,NONE), any(NONE) )) ) ) ; }
+#define METHOO( t1, w1, c1, n1 ) { ONWID( w1, newAPPLICATOR( task->context->this, ref(newFUNCTION( c1, any(n1), w1, any(t1) )) ) ) ; }
 #define METHOP( w1, f1 ) { ONWID( w1, newAPPLICATOR( THIS_R, ref(f1) ) ) ; }
 
 #define NOMOREWIDS { IFTYPE( WID_type ) ; IFTYPE( TID_type ) ; }
@@ -76,29 +77,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     ONWID( WI_DOT, IGNORE ) ;											\
     ONADDR( IGNORE, THIS ) ;											\
     ONWID( WI_delog, printf( "::::\t\t\t%s\n", DEBUG( THIS ) ), PTHIS ) ;					\
-    METHOD( WI_em, SEQ_type, newEMaction() ) ;									\
     IFWID( WI_throw, task->next = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, task->context->this ), task->result, task->next, task->exit ) ; ) ; \
 
 #define DO_COMMON \
     DO_NOTSOCOMMON												\
     METHOD( WI_then, SEQ_type, newTHENaction() ) ;								\
     METHOD( WI_else, SEQ_type, newELSEaction() ) ;								\
-    ONWID( WI_en, ref(PTHIS) ) ;										\
+    ONWID( WI_en, observerNEW( task, task->context->this, any(NONE) ) ) ;					\
+    METHOD( WI_em, SEQ_type, newEMaction() ) ;									\
     METHOD( WI_has, PARAMwa, newHASaction_wa()) ;								\
     METHOD( WI_is, ANY_type, newISaction() ) ;									\
     METHOD( WI_gets, PARAMcs, newGETSaction() ) ;								\
-    METHOP( WI_does, newIS( ref(newFUNCTION( PARAMwcs, any(newDOESaction_wcs()) )), ref(newFUNCTION( PARAMwf, any(newDOESaction_wf()) )) ) ) ;					\
+    METHOP( WI_does, newIS( ref(newFUNCTION( PARAMwcs, any(newDOESaction_wcs()), c(WID,NONE), any(NONE) )), ref(newFUNCTION( PARAMwf, any(newDOESaction_wf()), c(WID,NONE), any(NONE) )) ) ) ;					\
     METHOD( WI_noms, PARAMws, newNOMSaction() ) ;								\
-    METHOP( WI_inv, newIS( ref(newFUNCTION( PARAMws, any(newINVaction_ws()) )), ref(newFUNCTION( PARAMwas, any(newINVaction_was()) )) ) ) ; \
 
 
-#define USE_ON( _cont, _obj ) {	\
-  if ( (_obj)->objective == OBSERVER_type->instance_objective ) {	\
-    task->_cont = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, ref(C(OBSERVER,(_obj))->dep) ), ref(NONE), task->_cont, task->_cont ) ;	\
-  }	\
-}
-
-#define MOD_ON( _cont, _obj ) { if ( (_obj)->objective == OBSERVER_type->instance_objective ) { task->_cont = newTASK( ref(C(OBSERVER,_obj)->dep), newCONTEXT( task->context->closure, ref(C(OBSERVER,_obj)->dep), ref(WI_modified) ), task->result, task->_cont, task->_cont ) ; } }
+#define USE_ON( _cont, _obj ) {	if ( (_obj)->objective == OBSERVER_type->instance_objective ) { task->_cont = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, ref(newUSE( C(OBSERVER,_obj) )) ), ref(NONE), task->_cont, task->_cont ) ; } }
+#define MOD_ON( _cont, _obj ) { if ( (_obj)->objective == OBSERVER_type->instance_objective ) { task->_cont = newTASK( ref(_obj), newCONTEXT( task->context->closure, ref(_obj), ref(WI_modified) ), task->result, task->_cont, task->_cont ) ; } }
 
 
 inline STRING STRX( n_string fmt, ... ) ;
@@ -120,23 +115,23 @@ inline void error( n_string m, n_boolean v, n_string f, n_integer l ) ;
 
 inline TASK REC( TASK task, TYPE class, REFERENCE this, REFERENCE action, TASK next ) ;
 
-#define tupleNEW() newTUPLE( ANY_type, 0, c(REFS,NULL) )
-inline n_void tupleAPPEND( TUPLE l, REFERENCE e ) ;
-#define listNEW( x ) newLIST( (x), 0, c(REFS,NULL) )
+#define tupleNEW() newTUPLE( listNEW )
+#define listNEW newLIST( 0, c(REFS,NULL) )
 inline n_void listAPPEND( LIST l, REFERENCE e ) ;
 inline LIST listMERGE( LIST l1, LIST l2 ) ;
 inline n_boolean listHASELEMENT( LIST l, REFERENCE e ) ;
 inline n_void listREMOVEELEMENT( LIST l, REFERENCE e ) ;
+inline LIST listARG( ANY first, ... ) ;
 
+inline n_void depREEVALUATE( TASK task, OBSERVER dep ) ;
+inline n_void depPROPAGATE( TASK task, OBSERVER dep ) ;
+inline n_void depRESET( OBSERVER dep ) ;
+inline OBSERVER observerNEW( TASK task, REFERENCE state, ANY expression ) ;
 
-inline OBSERVER obsNEW( OBSERVER o1, REFERENCE o2 ) ;
-inline n_void depREEVALUATE( TASK task, DEPENDENCY dep ) ;
-inline n_void depPROPAGATE( TASK task, DEPENDENCY dep ) ;
-inline n_void depRESET( DEPENDENCY dep ) ;
 
 inline WID widNEW( n_string s ) ;
 
-inline ITERATOR iteratorNEW( TASK task, TYPE class, SEQ l, CLOSURE closure ) ;
+inline ITERATOR iteratorNEW( TASK task, SEQ l, CLOSURE closure ) ;
 
 CLOSURE ROOT ;
 NONETYPE NONE ;
@@ -146,7 +141,6 @@ LIST WIDS ;
 CONSOLE CONSOLEOBJECT ;
 LOOPstopTYPE LOOPstop ;
 
-ANY REFfact ;
 ANY CATfact ;
 ANY FACTfact ;
 ANY ASSORTfact ;

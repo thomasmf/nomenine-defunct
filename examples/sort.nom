@@ -3,8 +3,8 @@ defun (: 'sort' ( seq ) [
 
   var (: 'elements' ( that each ) )
   var (: 'pivot' ( elements next else [ return [] ] ) )
-  var (: 'low' [] )
-  var (: 'high' [] )
+  var (: 'low' ( [] en ) )
+  var (: 'high' ( [] en ) )
 
   loop [
     elements next else [ stop ] > ( pivot )
@@ -16,11 +16,12 @@ defun (: 'sort' ( seq ) [
 
 ] )
 
-var (: 'l' (: 3 2 8 2 5 2 1 2 7 2 4 2 3 ) )
+
+var (: 'l' ( [] 3 2 8 2 5 2 1 2 7 2 4 2 3 ) )
 
 ( console write
   'Unsorted list' tab	': ' ( l join ', ' )		newl
-  'Sorted list' tab	': ' ( sort( l ) join ', ' )	newl
+  'Sorted list' tab	': ' ( sort ( l ) join ', ' )	newl
 .)
 
 

@@ -1,15 +1,17 @@
 
 use ( module 'modules/seq-utils.nom' )
 
+( [] == [] else [ error 'empty list equality' ] .)
+
 (: 1 2 3 length == 3 else [ error 'tuple length' ] .)
-( list ( number ) 1 2 merge (: 3 4 ) length == 4 else [ error 'list merge length' ] .)
+( list ( number ) 1 2 merge ( [] 3 4 ) length == 4 else [ error 'list merge length' ] .)
 
-(: 1 2 3 == (: 1 2 3 ) else [ error 'tuple compare' ] .)
-(: (: 1 2 ) 3 == (: (: 1 2 ) 3 ) else [ error 'nested tuple compare' ] .)
+(: 1 2 3 == ( [] 1 2 3 ) else [ error 'tuple compare' ] .)
+(: (: 1 2 ) 3 == ( [] ( [] 1 2 ) 3 ) else [ error 'nested tuple compare' ] .)
 
-( sort (: 6 43 6 3 34 4 65 7 ) == (: 3 4 6 6 7 34 43 65 ) else [ error 'sorting' ] .)
+( sort ( [] 6 43 6 3 34 4 65 7 ) == ( [] 3 4 6 6 7 34 43 65 ) else [ error 'sorting' ] .)
 
-( range (: -5 5 ) == (: -4 -3 -2 -1 0 1 2 3 4 ) else [ error 'range' ] .)
+( range (: -5 5 ) == ( [] -4 -3 -2 -1 0 1 2 3 4 ) else [ error 'range' ] .)
 
 
 

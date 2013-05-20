@@ -1,10 +1,9 @@
 
 use ( module 'modules/seq-utils.nom' )
 
-
-var (: 'a1' 0 )
-dep (: 'l22' [ 10 20 30 ] [ l22 ! ] )
-dep (: 't1' [] [ [ 1 2 3 ] merge ( l22 ) ( a1 += 1 .) ] ) 
+var (: 'a1' ( 0 en ) )
+var (: 'l22' ( [ 10 20 30 ] em [ l22 ] ) )
+var (: 't1' ( [] em [ [ 1 2 3 ] merge ( l22 ) ( a1 += 1 .) ] ) )
 
 ( t1 == [ 1 2 3 10 20 30 ] else [ error 'list t1 1' ] .)
 
@@ -21,51 +20,52 @@ var (: 'l' ( [ 10 1 [] ] clone each ) )
 ( l next == 1 else [ error 'l next 2' ] .)
 ( l next == [] else [ error 'l next 3' ] .)
 
-
-var (: 'a2' 0 )
+var (: 'a2' ( 0 en ) )
 ( none else ( [ a2 = ] ( phrase ( [ 234 ] ( word '+' ) merge [ 1000 ] ) ) ) .)
 
 ( a2 == 1234 else [ error 'a2' ] .)
 
 
-var (: 'a3' 1 )
+var (: 'a3' ( 1 en ) )
 
-var (: 'g1' ( seq (: ( number ) [
-  dep (: 'd0' 1 [ d0 ! ] )
-  var (: 'i' 10 )
+var (: 'g1' ( seq [
+  var (: 'd0' ( 1 em [ d0 ] ) )
+  var (: 'i' ( 10 en ) )
   loop (
-    [
-      ( i -- == 0 then [ stop ] .)
-    ]
+    []
 
-    ( phrase ( []
-      ( static (: 0 [ d0 * 1000 ( a3 += ( i ) .) ] ) )
-      merge [ throw . ]
+    ( phrase ( [ yield ]
+      ( 0 em [ d0 * 1000 ( a3 += ( i ) .) ] )
+      merge [ . ]
     ) )
 
-    merge [
+    merge
+
+    [
+      ( i -- == 0 then [ stop ] .)
       ( i mod 3 == 0 then [ d0 ++ ] .)
-      ( i throw .)
+      ( yield ( i ) .)
     ]
+
   )
-] ) ) )
+] ) )
 
-( g1 == [ 1000 9 2000 8 2000 7 2000 6 3000 5 3000 4 3000 3 4000 2 4000 1 ] else [ error 'g1' ] .)
+( g1 == [ 1000 9 2000 8 2000 7 2000 6 3000 5 3000 4 3000 3 4000 2 4000 1 4000 ] else [ error 'g1' ] .)
 
-( a3 == 28 else [ error 'a3' ] .)
+([ ( a3 == 29 else [ error 'a3' ] .) ].)
 
 
 ( [ 1 2 3 ] = [ 4 5 6 ] == [ 4 5 6 ] else [ error 'list assign' ] .)
 
 
-dep (: 'e1' 1 [ e1 ! ] )
-dep (: 'e2' 2 [ e2 ! ] )
+var (: 'e1' ( 1 em [ e1 ] ) )
+var (: 'e2' ( 2 em [ e2 ] ) )
 
-dep (: 'l1' [] [ [] ( e1 ) ( e2 ) ] )
+var (: 'l1' ( [] em [ [] ( e1 ) ( e2 ) ] ) )
 
-dep (: 'l2' [ 10 20 30 ] [ l2 ! ] )
+var (: 'l2' ( [ 10 20 30 ] em [ l2 ] ) )
 
-dep (: 'l3' [] [ [] merge ( l1 ) merge ( l2 ) ] )
+var (: 'l3' ( [] em [ [] merge ( l1 ) merge ( l2 ) ] ) )
 
 ( l3 == [ 1 2 10 20 30 ] else [ error 'list dep 1' ] .)
 
@@ -75,8 +75,7 @@ dep (: 'l3' [] [ [] merge ( l1 ) merge ( l2 ) ] )
 ( l2 1111 .)
 ( l3 == [ 100 2 10 20 30 1111 ] else [ error 'list dep 3' ] .)
 
-
-dep (: 'l4' [] [ sort ( l3 ) ] )
+var (: 'l4' ( [] em [ sort ( l3 ) ] ) )
 
 ( l4 == [ 2 10 20 30 100 1111 ] else [ error 'l4 1' ] .)
 
@@ -92,17 +91,18 @@ dep (: 'l4' [] [ sort ( l3 ) ] )
 
 ( l2 merge [ 100001 100002 100003 ] .)
 
-( l4 == [ -111 1 10 20 22 30 55 100 111 333 1111 4444 100001 100002 100003 ] else [ error 'l4 3' ] .)
+( l4 == [ -111 1 10 20 22 30 55 100 111 333 1111 4444 100001 100002 100003 ] else [ error 'l4 4' ] .)
 
 ( e2 = 999999 .)
 
-( l4 == [ -111 1 10 20 22 30 100 111 333 1111 4444 100001 100002 100003 999999 ] else [ error 'l4 4' ] .)
+( l4 == [ -111 1 10 20 22 30 100 111 333 1111 4444 100001 100002 100003 999999 ] else [ error 'l4 5' ] .)
 
-dep (: 'l5' [] [ sort ( l5 ) ] )
+var (: 'l5' ( [] em [ sort ( l5 ) ] ) )
 
 ( l5 == [] else [ error 'l5 1' ] .)
 
 ( l5 7 3 .)
+
 ( l5 == [ 3 7 ] else [ error 'l5 2' ] .)
 
 ( l5 merge [ 5 9 ] .)

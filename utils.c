@@ -125,16 +125,6 @@ inline TASK REC( TASK task, TYPE type, REFERENCE this, REFERENCE action, TASK ne
 }
 
 
-
-	////	tuple stuff
-
-inline n_void tupleAPPEND( TUPLE l, REFERENCE e ) {
-  n_integer i = l->length++ ;
-  l->data = (REFS)GC_REALLOC( l->data, sizeof( n_pointer ) * l->length ) ;
-  l->data[ i ] = e ;
-  return ;
-}
-
 	////	list stuff
 
 inline n_void listAPPEND( LIST l, REFERENCE e ) {
@@ -163,7 +153,7 @@ inline n_boolean listHASELEMENT( LIST l, REFERENCE e ) {
 }
 
 inline n_void listREMOVEELEMENT( LIST l, REFERENCE e ) {
-  LIST l2 = listNEW( l->type ) ;
+  LIST l2 = listNEW ;
   n_integer i ;
   for ( i = 0 ; i < l->length ; i++ ) {
     if ( e->value != l->data[ i ]->value ) {
@@ -174,66 +164,64 @@ inline n_void listREMOVEELEMENT( LIST l, REFERENCE e ) {
   l->length = l2->length ;
 }
 
+inline LIST listARG( ANY first, ... ) {
+  LIST elements = listNEW ;
+  ANY current = first ;
+  va_list ap;
+  va_start( ap, first ) ;
+  while ( current ) {
+    listAPPEND( elements, ref(current) ) ;
+    current = va_arg( ap, ANY ) ;
+  }
+  va_end( ap ) ;
+  return elements ;
+}
+
 
 	////	static dependencies
 
 
-inline OBSERVER obsNEW( OBSERVER o1, REFERENCE o2 ) {
-  if ( o1->object->objective == OBSERVER_type->instance_objective ) {
-    return newOBSERVER( o1->dep, ref(obsNEW( C(OBSERVER,o1->object->value), o2 )) ) ;
-  } else {
-    return newOBSERVER( o1->dep, o2 ) ;
-  }
-}
-
-inline n_void depREEVALUATE( TASK task, DEPENDENCY dep ) {
+inline n_void depREEVALUATE( TASK task, OBSERVER dep ) {
 
   REFERENCE r1 = ref(NONE) ;
   REFERENCE r2 = ref(NONE) ;
 
-  REFERENCE r4 = ref(NONE) ;
-
-  REFERENCE r5 = ref(NONE) ;
-
-
-  task->next = newTASK( ref(newPROPAGATEtest( dep, r5 )), task->context, ref(NONE), task->next, task->next ) ;
+  REFERENCE r6 = ref(dep) ;
 
   CONTEXT c3 = newCONTEXT( task->context->closure, r2, r1 ) ;
   task->next = newTASK( r2, c3, ref(NONE), task->next, task->next ) ;
-  // mabe mute the setment from connect
-  CONTEXT c2 = newCONTEXT( task->context->closure, dep->state, ref(WI_EQ) ) ;
-  task->next = newTASK( dep->state, c2, r2, task->next, task->next ) ;
 
-
-  CONTEXT c5 = newCONTEXT( task->context->closure, r4, r1 ) ;
-  task->next = newTASK( r4, c5, r5, task->next, task->next ) ;
-
-  CONTEXT c4 = newCONTEXT( task->context->closure, dep->state, ref(WI_EQEQ) ) ;
-  task->next = newTASK( dep->state, c4, r4, task->next, task->next ) ;
-
+  CONTEXT c2 = newCONTEXT( task->context->closure, r6, ref(WI_EQ) ) ;
+  task->next = newTASK( r6, c2, r2, task->next, task->next ) ;
 
   CLOSURE c1 = newCLOSURE( task->context->closure, ref(task->context), ref(dep->definition->closure->view), ref(newDEPcatcher( task->context->closure->field, dep )) ) ;
+
   task->next = newTASK( ref(newEVALUATE( c1, ref(c1), c(SEQ,dep->definition->expression) )), task->context, r1, task->next, task->next ) ;
 
-  task->next = newTASK( ref(newDEPENDENCYreset( dep )), task->context, task->result, task->next, task->next ) ;
+  task->next = newTASK( ref(newOBSERVERreset( dep )), task->context, task->result, task->next, task->next ) ;
 }
 
 
-inline n_void depPROPAGATE( TASK task, DEPENDENCY dep ) {
+inline n_void depPROPAGATE( TASK task, OBSERVER dep ) {
   n_integer i ;
   for ( i = 0 ; i < dep->out->length ; i++ ) {
-    depREEVALUATE( task, C(DEPENDENCY,dep->out->data[ i ]->value) ) ;
+    depREEVALUATE( task, C(OBSERVER,dep->out->data[ i ]->value) ) ;
   }
 }
 
-inline n_void depRESET( DEPENDENCY dep ) {
+inline n_void depRESET( OBSERVER dep ) {
   n_integer i ;
   for ( i = 0 ; i < dep->in->length ; i++ ) {
-    listREMOVEELEMENT( C(DEPENDENCY,dep->in->data[ i ]->value)->out, ref( dep ) ) ;
+    listREMOVEELEMENT( C(OBSERVER,dep->in->data[ i ]->value)->out, ref( dep ) ) ;
   }
-  dep->in = listNEW( DEPENDENCY_type ) ;
+  dep->in = listNEW ;
 }
 
+inline OBSERVER observerNEW( TASK task, REFERENCE state, ANY expression ) {
+  OBSERVER dep = newOBSERVER( listNEW, listNEW, state, newDEFINITION( task->context->closure, expression ), TRUE ) ;
+  RASET( task->context->closure->field, newDEPblocker( ref( task->context->closure->field->value ), dep ) ) ;
+  return dep ;
+}
 
 	////	wid stuff
 
@@ -252,10 +240,10 @@ inline WID widNEW( n_string s ) {
 
 	////	iterator stuff
 
-inline ITERATOR iteratorNEW( TASK task, TYPE type, SEQ l, CLOSURE closure ) {
+inline ITERATOR iteratorNEW( TASK task, SEQ l, CLOSURE closure ) {
   REFERENCE r1 = refNEW( ITERATOR_type, any(NONE) ) ;
 
-  CLOSURE c1 = newCLOSURE( task->context->closure, closure->context, closure->view, ref(newGETS( task->context->closure->field, type, any(newITERATORcatch( r1 )) )) ) ;
+  CLOSURE c1 = newCLOSURE( task->context->closure, closure->context, closure->view, ref(newGETS( task->context->closure->field, ELEMENT_type, any(newITERATORcatch( r1 )) )) ) ;
   CONTEXT c2 = newCONTEXT( c1->parent, ref(NONE), ref(NONE) ) ;
 
   TASK t1 = newTASK( ref(newITERATORend( r1 )), task->context, task->result, task->next, task->exit ) ;

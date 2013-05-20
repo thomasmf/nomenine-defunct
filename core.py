@@ -51,7 +51,6 @@ META.NAME = 'core'
 
 T( 'ROOTOBJECT', None, None, (), """
   DO_COMMON ;
-  ONWID( WI_ref, REFfact ) ;
   ONWID( WI_seq, SEQ_type ) ;
   ONWID( WI_fun, FUNCTION_type ) ;
   ONWID( WI_number, NUMBER_type ) ;
@@ -96,12 +95,13 @@ W(
   'console', 'read', 'write',
   'loop', 'stop', 'continue',
   'func', 'return', 'break', 'apply',
-  'seq', 'gen', 'next', 'list', 'each', 'merge', 'length', 'iterator', 'join', 'eval', 'all',
+  'seq', 'gen', 'next', 'list', 'each', 'merge', 'length', 'iterator', 'join', 'eval', 'all', 'yield',
   'assort', 'struct',
   'delog', 'tron', 'troff',
   'module', 'use',
   'c', 's', 'w', 'f', 'a',
   'info',
+  'id'
 )
 
 ############################################################################################################
@@ -138,7 +138,7 @@ typedef char n_character ;
 typedef void n_void ;
 typedef n_integer n_boolean ;
 typedef n_character* n_string ;
-typedef n_pointer* n_array ;
+typedef ANY* n_array ;
 
 typedef n_void (*n_objective)( TASK ) ;
 typedef ANY (*n_constructor)( n_void ) ;
@@ -185,51 +185,29 @@ T( 'REFERENCE', None, None, (
   A( 'ANY', 'value' ),
   A( 'ANY', 'svalue' ),
 ), """
-  DO_NOTSOCOMMON ;
   IFTYPE( NOUN_type,
     RASET( task->result, PTHIS ) ;
     CONTEXT c1 = newCONTEXT( task->context->closure, ref(THIS), ref(C(NOUN,PTHAT)->object->value) ) ;
     task->next = newTASK( ref(newSETREFERENCE()), c1, task->result, task->next, task->exit ) ;
   ) ;
-  METHOD( WI_EQ, REFERENCE_type, newREFERENCEset2() ) ;
-  ONWID( WI_clone, newREFERENCE( THIS->type, THIS->value, THIS->svalue ) ) ;
+
   CONTEXT c1 = newCONTEXT( task->context->closure, THIS, task->context->that ) ;
   task->next = newTASK( THIS, c1, task->result, task->next, task->exit ) ;
 """,
   debug = D( ' %s', 'DEBUG( C(REFERENCE,o)->value )' )
 )
 
-T( 'REFERENCEset2', 'REFERENCE', 'REFERENCE', (), """
-  REFERENCE r2 = ref(PSTHIS->value) ;
-  CONTEXT c5 = newCONTEXT( task->context->closure, r2, ref(WI_EQ) ) ;
-  task->next = newTASK( r2, c5, task->result, task->next, task->next ) ;
-  // rest reference should maintain observer if any exists
-
-  RASET( task->result, PTHIS ) ;
-  CONTEXT c1 = newCONTEXT( task->context->closure, ref(PSTHIS), PSTHAT ) ;
-  task->next = newTASK( ref(newSETREFERENCE()), c1, task->result, task->next, task->exit ) ;
-""" )
-
 T( 'SETREFERENCE', 'REFERENCE', None, (), """
-  task->next = newTASK( ref(newREFERENCEreset()), task->context, task->result, task->next, task->exit ) ;
-  task->next = REC( task, PSTHIS->type, ref(PSTHIS), ref(newREFERENCEset()), task->next ) ;
+  task->next = newTASK( ref(newREFERENCEresetter()), task->context, task->result, task->next, task->exit ) ;
+  task->next = REC( task, PSTHIS->type, ref(PSTHIS), ref(newREFERENCEsetter()), task->next ) ;
 """ )
 
-T( 'REFERENCEset', 'REFERENCE', None,(), """
+T( 'REFERENCEsetter', 'REFERENCE', None,(), """
   RDSET( PSTHIS, PTHAT, PSTHAT ) ;
 """ )
 
-T( 'REFERENCEreset', 'REFERENCE', None,(), """
+T( 'REFERENCEresetter', 'REFERENCE', None,(), """
   RSET( PSTHIS, NONE ) ;
-""" )
-
-
-
-
-	#	ref ( some-type )
-
-T( 'REFconst', None, 'TYPE', (), """
-  RETURN( refNEW( PSTHAT, any(NONE) ) ) ;
 """ )
 
 
@@ -307,8 +285,8 @@ T( 'EVALUATOR', None, None, (
   CONTEXT c1 = newCONTEXT( THIS->context->closure, r1, r2 ) ;
   task->next = newTASK( ref(newEVALUATOR( c1, THIS->iterator )), task->context, task->result, task->next, task->next ) ;
 
-  CONTEXT c2 = newCONTEXT( task->context->closure, ref(THIS->iterator), ref(WI_next) ) ;
-  task->next = newTASK( ref(THIS->iterator->value), c2, r2, task->next, task->next ) ;
+  CONTEXT c2 = newCONTEXT( task->context->closure, THIS->iterator, ref(WI_next) ) ;
+  task->next = newTASK( THIS->iterator, c2, r2, task->next, task->next ) ;
 
   task->next = newTASK( THIS->context->this, THIS->context, r1, task->next, task->next ) ;
 
@@ -404,12 +382,12 @@ T( 'CLOSURE', None, None, (
   ONWID( WI_that, C(CONTEXT,THIS->context->value)->that->value ) ;
   METHOD( WI_loop, SEQ_type, newLOOPaction() ) ;
   METHOD( WI_var, PARAMwa, newVARaction_wa() ) ;
-  METHOP( WI_dep, newIS( ref(newFUNCTION( PARAMws, any(newDEPaction_ws()) )), ref(newFUNCTION( PARAMwas, any(newDEPaction_was()) )) ) ) ;
   METHOD( WI_catch, PARAMcs, newCATCHaction() ) ;
   METHOD( WI_defun, PARAMwcs, newDEFUNaction() ) ;
   METHOD( WI_defact, PARAMwcs, newDEFACTaction() ) ;
   METHOD( WI_nom, PARAMws, newNOMaction() ) ;
   METHOD( WI_return, ANY_type, newRETURNaction() ) ;
+  METHOD( WI_yield, ANY_type, newYIELDaction() ) ;
 //  METHOD( WI_exit, NUMBER_type, newEXITaction() ) ;
   IFWID( WI_halt, exit( EX_OK ) ; ) ;
   METHOD( WI_use, ANY_type, newUSEaction() ) ;
@@ -469,12 +447,13 @@ T( 'CATCHaction', 'CLOSURE', 'PARAMcs_struct', (), """
 	#	defun (: 'some-symbol' ( some-type ) [ ... ] )
 
 T( 'DEFUNaction', 'CLOSURE', 'PARAMwcs_struct', (), """
+  WID w = widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ) ;
   RASET( PSTHIS->view, newHAS(
     ref( PSTHIS->view->value ),
-    widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
+    w,
     ref(newFUNCTION(
       C(TYPE,PSTHAT->c_ref->svalue),
-      any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view ))
+      any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view )), w, any(PSTHIS->view->value)
     ))
   ) ) ;
   RETURN( PTHIS ) ;
@@ -488,7 +467,7 @@ T( 'DEFACTaction', 'CLOSURE', 'PARAMwcs_struct', (), """
     widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
     ref(newTYPE( newTID(), c(n_objective,NULL), any(newFUNCTION(
       C(TYPE,PSTHAT->c_ref->svalue),
-      any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view ))
+      any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view )), c(WID,NONE), any(NONE)
     )), any(NONE) ))
   ) ) ;
   RETURN( PTHIS ) ;
@@ -584,10 +563,11 @@ T( 'DOESaction_wf', None, 'PARAMwf_struct', (), """
 	#	does (: 'some-symbol' ( some-type ) [ ... ] )
 
 T( 'DOESaction_wcs', None, 'PARAMwcs_struct', (), """
-  RETURN( newDOES( task->context->this, widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
+  WID w = widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ) ;
+  RETURN( newDOES( task->context->this, w,
     any(newFUNCTION(
       C(TYPE,PSTHAT->c_ref->svalue),
-      any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view ))
+      any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view )), w, any(task->context->this)
     ))
   ) ) ;
 """ )
@@ -635,11 +615,11 @@ T( 'HAS', None, None, (
     task->next = newTASK( THIS->attribute, c2, r2, task->next, task->next ) ;
   ) ;
 
-  if ( PTHIS->objective == OBSERVER_type->instance_objective ) {
-    ONWID( THIS->wid, obsNEW( C(OBSERVER,PTHIS), THIS->attribute ) ) ;
-  } else {
-    ONWID( THIS->wid, THIS->attribute->value ) ;
-  }
+  IFWID( THIS->wid,
+    RASET( task->result, THIS->attribute->value ) ;
+    task->next = task->exit ;
+  ) ;
+
 
   task->next = newTASK( THIS->rest, task->context, task->result, task->next, task->exit ) ;
 """ )
@@ -658,7 +638,6 @@ T( 'HASSETapplicator', None, None, (
 
   CONTEXT c5 = newCONTEXT( task->context->closure, C(HAS,THIS->has->svalue)->rest, ref(WI_EQ) ) ;
   task->next = newTASK( C(HAS,THIS->has->svalue)->rest, c5, r5, task->next, task->next ) ;
-  // rest reference should maintain observer if any exists
 
   REFERENCE r2 = ref(NONE) ;
   REFERENCE r3 = ref(NONE) ;
@@ -783,149 +762,107 @@ T( 'NOMS', None, None, (
 
 	####	static dependencies
 
-T( 'DEPcatcher', None, None, (
-  A( 'REFERENCE', 'rest' ),
-  A( 'DEPENDENCY', 'dep' ),
-), """
-  IFTYPE( DEPENDENCY_type,
-    if ( !listHASELEMENT( C(DEPENDENCY,PTHAT)->out, ref(THIS->dep) ) ) {
-      listAPPEND( THIS->dep->in, task->context->that ) ;
-      listAPPEND( C(DEPENDENCY,PTHAT)->out, ref(THIS->dep) ) ;
-    }
-  ) ;
-  task->next = newTASK( ref(THIS->rest), task->context, task->result, task->next, task->exit ) ;
-""" )
-
-	#	dep (: 'some-symbol' [ ... ] )
-
-T( 'DEPaction_ws', 'CLOSURE', 'PARAMws_struct', (), """
-  RETURN( NONE ) ;
-""" )
-
-	#	dep (: 'some-symbol' ( some-object ) [ ... ] )
-
-T( 'DEPaction_was', 'CLOSURE', 'PARAMwas_struct', (), """
-  RASET( PSTHIS->view, newHAS(
-    ref( PSTHIS->view->value ),
-    widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
-    ref(newOBSERVER( newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), PSTHAT->a_ref,
-      newDEFINITION(
-        task->context->closure,
-        any( PSTHAT->s_ref->svalue )
-      ), TRUE
-    ), PSTHAT->a_ref ))
-  ) ) ;
-  RETURN( PTHIS ) ;
-""" )
-
 	#	static [ ... ]
 
 T( 'STATICconst_s', None, None, (), """
-  REFERENCE r1 = ref(NONE) ;
-  RETURN(
-    newOBSERVER(
-      newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), r1,
-        newDEFINITION(
-          task->context->closure,
-          PSTHAT
-        ), TRUE
-      ),
-      r1
-    )
-  ) ;
-""" )
-
-	#	static (: ( some-object ) [ ... ] )
-
-T( 'STATICconst_as', None, 'PARAMas_struct', (), """
-  RETURN( newOBSERVER(
-    newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), PSTHAT->a_ref,
-      newDEFINITION(
-        task->context->closure,
-        PSTHAT->s_ref->value
-      ), TRUE
-    ),
-    PSTHAT->a_ref
-  ) ) ;
+  RETURN( observerNEW( task, ref(NONE), PSTHAT ) ) ;
 """ )
 
 	#	o em [ ... ]
 
 T( 'EMaction', None, None, (), """
-  RETURN( newOBSERVER(
-    newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), task->context->this,
-      newDEFINITION(
-        task->context->closure,
-        task->context->that->value
-      ), TRUE
-    ),
-    task->context->this
-  ) ) ;
+  RETURN( observerNEW( task, ref(task->context->this->value), task->context->that->value ) ) ;
 """ )
 
-	#	inv (: 'some-symbol' [ ... ] )
-
-T( 'INVaction_ws', None, 'PARAMws_struct', (), """
-  RETURN( NONE ) ;
-""" )
-
-	#	inv (: 'some-symbol' ( some-object ) [ ... ] )
-
-T( 'INVaction_was', None, 'PARAMwas_struct', (), """
-  RETURN( newHAS(
-    ref( task->context->closure->view->value ),
-    widNEW( C(STRING,PSTHAT->w_ref->svalue)->data ),
-    ref(newOBSERVER( newDEPENDENCY( listNEW( DEPENDENCY_type ), listNEW( DEPENDENCY_type ), PSTHAT->a_ref,
-      newDEFINITION(
-        task->context->closure,
-        any( PSTHAT->s_ref->svalue )
-      ), TRUE
-    ), PSTHAT->a_ref ))
-  ) ) ;
-""" )
-
-T( 'DEPENDENCY', None, None, (
+T( 'OBSERVER', None, None, (
   A( 'LIST', 'in' ),
   A( 'LIST', 'out' ),
   A( 'REFERENCE', 'state' ),
   A( 'DEFINITION', 'definition' ),
   A( 'n_boolean', 'initialize' ),
 ), """
+
+  ONWID( WI_en, THIS ) ;
+
   DO_TYPE ;
+
+  ONWID( WI_clone, THIS ) ;
+
+
+  if ( THIS->initialize ) {
+    THIS->initialize = FALSE ;
+    task->next = newTASK( task->action, task->context, task->result, task->next, task->exit ) ;
+    depREEVALUATE( task, THIS ) ;
+    CONTINUE ;
+  }
+
+  METHOO( THIS->state->value, WI_EQ, OBSERVER_type, newOBSERVERset() ) ;
 
   IFWID( WI_modified,
     depPROPAGATE( task, THIS ) ;
   ) ;
 
-  IFWID( WI_connect,
-    task->next = newTASK( ref(newSETRESULT( any(newOBSERVER( THIS, THIS->state )) )), task->context, task->result, task->next, task->exit ) ;
-    task->next = newTASK( task->context->closure->field, newCONTEXT( task->context->closure, task->context->closure->field, ref(THIS) ), task->result, task->next, task->next ) ;
+  IFWID( WI_EXCLAIM,
+    USE_ON( exit, THIS ) ;
+    CONTEXT c1 = newCONTEXT( task->context->closure, THIS->state, ref(WI_clone) ) ;
+    task->next = newTASK( THIS->state, c1, task->result, task->exit, task->exit ) ;
   ) ;
+  task->next = newTASK( THIS->state, task->context, task->result, task->next, task->exit ) ;
+"""
+)
+
+T( 'OBSERVERset', 'OBSERVER', 'OBSERVER', (), """
+  RASET( task->result, PTHIS ) ;
+  USE_ON( exit, PTHAT ) ;
+
+  REFERENCE r1 = ref(PSTHIS->state) ;
+  REFERENCE r2 = ref(NONE) ;
+  REFERENCE r3 = ref(NONE) ;
+
+  task->next = newTASK( ref(newPROPAGATEtest( PSTHIS, r3 )), task->context, ref(NONE), task->exit, task->exit ) ;
+
+  CONTEXT c1 = newCONTEXT( task->context->closure, r1, ref(newNOUN( PSTHAT->state )) ) ;
+  task->next = newTASK( r1, c1, task->result, task->next, task->next ) ;
+
+  CONTEXT c2 = newCONTEXT( task->context->closure, r2, PSTHAT->state ) ;
+  task->next = newTASK( r2, c2, r3, task->next, task->next ) ;
+
+  CONTEXT c3 = newCONTEXT( task->context->closure, PSTHIS->state, ref(WI_EQEQ) ) ;
+  task->next = newTASK( PSTHIS->state, c3, r2, task->next, task->next ) ;
 
 """ )
 
-T( 'OBSERVER', None, None, (
-  A( 'DEPENDENCY', 'dep' ),
-  A( 'REFERENCE', 'object' ),
+
+T( 'DEPcatcher', None, 'USE', (
+  A( 'REFERENCE', 'rest' ),
+  A( 'OBSERVER', 'dep' ),
 ), """
-
-  ONWID( WI_delog, printf( "::::\\t\\t\\t%s\\n", DEBUG( THIS ) ), PTHIS ) ;
-
-  ONWID( WI_clone, THIS ) ;
-
-  if ( THIS->dep->initialize ) {
-    THIS->dep->initialize = FALSE ;
-    task->next = newTASK( task->action, task->context, task->result, task->next, task->exit ) ;
-    depREEVALUATE( task, THIS->dep ) ;
-    CONTINUE ;
-  }
-
-  IFWID( WI_EXCLAIM,
-    USE_ON( exit, THIS ) ;
-    CONTEXT c1 = newCONTEXT( task->context->closure, THIS->object, ref(WI_clone) ) ;
-    task->next = newTASK( THIS->object, c1, task->result, task->exit, task->exit ) ;
+  IFTYPE( USE_type,
+    if ( !listHASELEMENT( PSTHAT->object->out, ref(THIS->dep) ) ) {
+      listAPPEND( THIS->dep->in, ref(PSTHAT->object) ) ;
+      listAPPEND( PSTHAT->object->out, ref(THIS->dep) ) ;
+    }
   ) ;
-  task->next = newTASK( THIS->object, task->context, task->result, task->next, task->exit ) ;
+  task->next = newTASK( ref(THIS->rest), task->context, task->result, task->next, task->exit ) ;
+""" )
+
+
+T( 'DEPblocker', None, 'USE', (
+  A( 'REFERENCE', 'rest' ),
+  A( 'OBSERVER', 'dep' ),
+), """
+  if ( PTHAT->objective == USE_type->instance_objective ) {
+    if ( PSTHAT->object == THIS->dep ) {
+      RETURN( NONE ) ;
+    }
+  }
+  task->next = newTASK( ref(THIS->rest), task->context, task->result, task->next, task->exit ) ;
+""" )
+
+
+T( 'USE', None, None, (
+  A( 'OBSERVER', 'object' ),
+), """
 """ )
 
 T( 'DEFINITION', None, None, (
@@ -935,7 +872,7 @@ T( 'DEFINITION', None, None, (
 """ )
 
 T( 'PROPAGATEtest', None, None, (
-  A( 'DEPENDENCY', 'dep' ),
+  A( 'OBSERVER', 'dep' ),
   A( 'REFERENCE', 'result' ),
 ), """
   if ( !NOTNONE( THIS->result->value ) ) {
@@ -943,8 +880,8 @@ T( 'PROPAGATEtest', None, None, (
   }
 """ )
 
-T( 'DEPENDENCYreset', None, None, (
-  A( 'DEPENDENCY', 'dep' ),
+T( 'OBSERVERreset', None, None, (
+  A( 'OBSERVER', 'dep' ),
 ), """
   depRESET( THIS->dep ) ;
 """ )
@@ -1004,13 +941,13 @@ T( 'STRUCTfinnish', None, None, (
 	####	assort (: (: 'some-symbol' ( some-type ) ) ... )
 
 T( 'ASSORTconst', None, 'TUPLE', (), """
-  ASSORTER assorter = newASSORTER( listNEW( PARAMwc_struct_type ) ) ;
+  ASSORTER assorter = newASSORTER( listNEW ) ;
   task->next = newTASK( ref(newASSORTfinnish( assorter )), task->context, task->result, task->next, task->exit ) ;
   n_integer i ;
-  for ( i = PSTHAT->length-1 ; i >= 0 ; i-- ) {
+  for ( i = PSTHAT->list->length-1 ; i >= 0 ; i-- ) {
     REFERENCE r1 = ref(NONE) ;
     task->next = newTASK( ref(newASSORTprocess( assorter, r1 )), task->context, ref(NONE), task->next, task->exit ) ;
-    CONTEXT c1 = newCONTEXT( task->context->closure, task->context->this/**/, PSTHAT->data[ i ] ) ;
+    CONTEXT c1 = newCONTEXT( task->context->closure, task->context->this/**/, PSTHAT->list->data[ i ] ) ;
     task->next = newTASK( ref(newPARAMwc_assort()), c1, r1, task->next, task->next ) ;
   }
 """ )
@@ -1029,7 +966,7 @@ T( 'ASSORTprocess', None, None, (
 T( 'ASSORTfinnish', None, None, (
   A( 'ASSORTER', 'assorter' ),
 ), """
-  RETURN( newFUNCTION( TUPLE_type, any(newFUNCTION( TUPLE_type, any(THIS->assorter) )) ) ) ;
+  RETURN( newFUNCTION( TUPLE_type, any(newFUNCTION( TUPLE_type, any(THIS->assorter), c(WID,NONE), any(NONE) )), c(WID,NONE), any(NONE) ) ) ;
 """ )
 
 	#	assorter (: ... )
@@ -1037,15 +974,15 @@ T( 'ASSORTfinnish', None, None, (
 T( 'ASSORTER', None, 'TUPLE', (
   A( 'LIST', 'elements' ),
 ), """
-  if ( THIS->elements->length == PSTHAT->length ) {
-    STRUCT assortment = newSTRUCT( listNEW( PARAMwa_struct_type ) ) ;
+  if ( THIS->elements->length == PSTHAT->list->length ) {
+    STRUCT assortment = newSTRUCT( listNEW ) ;
     task->next = newTASK( ref(newASSORTERfinnish( assortment )), task->context, task->result, task->next, task->exit ) ;
     n_integer i ;
     for ( i = 0 ; i < THIS->elements->length ; i++ ) {
       REFERENCE e_ref = refNEW( C(TYPE,C(PARAMwc_struct,THIS->elements->data[ i ]->svalue)->c_ref->svalue), any(NONE) ) ;
       REFERENCE e_ref_ref = ref(e_ref) ;
       task->next = newTASK( ref(newASSORTERprocess( assortment, C(PARAMwc_struct,THIS->elements->data[ i ]->svalue)->w_ref, e_ref )), task->context, ref(NONE), task->next, task->exit ) ;
-      CONTEXT c1 = newCONTEXT( task->context->closure, e_ref_ref, ref(newNOUN( PSTHAT->data[ i ] )) ) ;
+      CONTEXT c1 = newCONTEXT( task->context->closure, e_ref_ref, ref(newNOUN( PSTHAT->list->data[ i ] )) ) ;
       task->next = newTASK( e_ref_ref, c1, ref(NONE), task->next, task->next ) ;
     }
   }
@@ -1086,7 +1023,7 @@ T( 'STRUCT', None, None, (
   ONWID( WI_EQ, newSTRUCTSETapplicator( newREFERENCE( HAS_type, PTHIS, any(THIS) ) ) ) ;
   ONWID( WI_EQEQ, newSTRUCTCOMPAREapplicator( newREFERENCE( HAS_type, PTHIS, any(THIS) ) ) ) ;
   IFWID( WI_clone,
-    LIST elements = listNEW( ANY_type ) ;
+    LIST elements = listNEW ;
     task->next = newTASK( ref(newSETRESULT( any(newSTRUCT( elements )) )), task->context, task->result, task->next, task->exit ) ;
     n_integer i ;
     for ( i = 0 ; i < THIS->elements->length ; i++ ) {
@@ -1235,17 +1172,29 @@ T( 'APPLICATOR', None, None, (
 T( 'FUNCTION', None, None, (
   A( 'TYPE', 'type' ),
   A( 'ANY', 'action' ),
+  A( 'WID', 'name' ),
+  A( 'ANY', 'super' ),
 ), """
   DO_TYPE ;
+  ONWID( WI_clone, PTHIS ) ;
   METHOD( WI_apply, ANY_type, newAPPLYaction() ) ;
   NOMOREWIDS ;
+  if ( NOTNONE( THIS->name ) ) {
+    REFERENCE r1 = ref(NONE) ;
+    REFERENCE r2 = ref(THIS->super) ;
+    CONTEXT c1 = newCONTEXT( task->context->closure, r1, task->context->that ) ;
+    task->next = newTASK( r1, c1, task->result, task->next, task->exit ) ;
+    CONTEXT c2 = newCONTEXT( task->context->closure, task->context->this, ref(THIS->name) ) ;
+    task->next = newTASK( r2, c2, r1, task->next, task->next ) ;
+  }
   task->next = REC( task, THIS->type, task->context->this, ref( THIS->action ), task->next ) ;
 """ )
 
 T( 'FUNCTIONconst', 'TYPE', 'PARAMcs_struct', (), """
   RETURN( newFUNCTION(
     C(TYPE,PSTHAT->c_ref->svalue),
-    any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view ))
+    any(newOBJECTIVE( c(SEQ,PSTHAT->s_ref->svalue), task->context->closure->view )),
+    c(WID,NONE), any(NONE)
   ) ) ;
 """ )
 
@@ -1264,6 +1213,7 @@ T( 'TYPE', None, None, (
   A( 'ANY', 'comparator' ),
 ), """
   DO_TYPE ;
+  ONWID( WI_id, THIS->id ) ;
   if ( THIS->instance_objective == c(n_objective,NULL) ) {
     REFERENCE r1 = ref(NONE ) ;
     CONTEXT c1 = newCONTEXT( task->context->closure, THIS_R, r1 ) ;
@@ -1274,7 +1224,9 @@ T( 'TYPE', None, None, (
   }
 """ )
 
-T( 'TID' )
+T( 'TID', None, None, (), """
+  DO_TYPE ;
+""" )
 
 T( 'SIGNATURE', None, None, (
   A( 'TYPE', 'type' ),
@@ -1544,30 +1496,43 @@ T( 'JOINiterate2', None, None, (
 	####	generator
 
 T( 'GENERATOR', None, None, (
-  A( 'TYPE', 'type' ),
   A( 'SEQ', 'expr' ),
   A( 'CLOSURE', 'closure' ),
 ), """
   TYPE_RESPONSE( SEQ_type ) ;
   DO_TYPE ;
+  ONWID( WI_clone, PTHIS ) ;
   METHOD( WI_EQEQ, SEQ_type, newSETCOMPAREaction() ) ;
   METHOD( WI_join, STRING_type, newJOINaction() ) ;
   IFWID( WI_toSUBstring, task->next = newTASK( ref(newSETTOSTRaction()), task->context, task->result, task->exit, task->exit ) ; );
   IFWID( WI_eval, task->next = newTASK( ref(newEVALUATE( task->context->closure, ref(task->context->closure), c(SEQ,THIS) )), task->context, task->result, task->next, task->exit ) ; ) ;
   IFWID( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
-  ONWID( WI_each, iteratorNEW( task, THIS->type, THIS->expr, THIS->closure ) ) ;
+  ONWID( WI_each, iteratorNEW( task, THIS->expr, THIS->closure ) ) ;
 """ )
 
-T( 'GENERATORconst', None, 'PARAMcs_struct', (), """
-  RETURN( newGENERATOR( C(TYPE,PSTHAT->c_ref->svalue), c(SEQ,PSTHAT->s_ref->svalue), task->context->closure ) ) ;
+T( 'GENERATORconst', None, None, (), """
+  RETURN( newGENERATOR( c(SEQ,PTHAT), task->context->closure ) ) ;
 """ )
+
+	#	yield ( object )
+
+T( 'YIELDaction', 'CLOSURE', None, (), """
+  CONTEXT c1 = newCONTEXT( task->context->closure, task->context->closure->field, ref(newELEMENT( task->context->that )) ) ;
+  task->next = newTASK( task->context->closure->field, c1, task->result, task->next, task->exit ) ;
+""" )
+
+T( 'ELEMENT', None, None, (
+  A( 'REFERENCE', 'object' ),
+), """
+  DO_TYPE ;
+""" )
+
 
 
 
 	####	list
 
 T( 'LIST', None, None, (
-  A( 'TYPE', 'type' ),
   A( 'n_integer', 'length' ),
   A( 'REFS', 'data' ),
 ), """
@@ -1580,22 +1545,21 @@ T( 'LIST', None, None, (
   IFWID( WI_eval, task->next = newTASK( ref(newEVALUATE( task->context->closure, ref(task->context->closure), c(SEQ,THIS) )), task->context, task->result, task->next, task->exit ) ; ) ;
   IFWID( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
   IFWID( WI_clone,
-    LIST list = newLIST( THIS->type, 0, c(REFS,NULL) ) ;
+    LIST list = listNEW ;
     listMERGE( list, THIS ) ;
     RETURN( list ) ;
   ) ;
   IFWID( WI_length, USE_ON( exit, PTHIS ) ; RETURN( newNUMBER( THIS->length ) ) ; ) ;
-  IFWID( WI_each, USE_ON( exit, PTHIS ) ; RETURN( newLISTITERATOR( THIS, 0, any(NONE) ) ) ; ) ;
+  IFWID( WI_each, USE_ON( exit, PTHIS ) ; RETURN( newLISTITERATOR( THIS, 0, ref(NONE) ) ) ; ) ;
   METHOD( WI_merge, SEQ_type, newMERGELISTaction() ) ;
-  METHOD( WI_ADD, THIS->type, newAPPENDLISTaction() ) ;
   NOMOREWIDS ;
-  task->next = REC( task, THIS->type, THIS_R, ref(newAPPENDLISTaction()), task->next ) ;
+  task->next = REC( task, ANY_type, THIS_R, ref(newAPPENDLISTaction()), task->next ) ;
 """ )
 
 T( 'LISTset', 'LIST', None, (), """
     USE_ON( exit, PTHAT ) ;
 
-    REFERENCE oldlist = ref(newLIST( PSTHIS->type, PSTHIS->length, PSTHIS->data )) ;
+    REFERENCE oldlist = ref(newLIST( PSTHIS->length, PSTHIS->data )) ;
 
     PSTHIS->length = 0 ;
     PSTHIS->data = c(REFS,NULL) ;
@@ -1608,15 +1572,16 @@ T( 'LISTset', 'LIST', None, (), """
       REFERENCE r2 = ref(NONE) ;
       REFERENCE r3 = ref(NONE) ;
 
-      task->next = newTASK( ref(newPROPAGATEtest( C(OBSERVER,PTHIS)->dep, r3 )), task->context, ref(NONE), task->exit, task->exit ) ;
+      task->next = newTASK( ref(newPROPAGATEtest( C(OBSERVER,PTHIS), r3 )), task->context, ref(NONE), task->exit, task->exit ) ;
 
-      CONTEXT c3 = newCONTEXT( task->context->closure, r2, task->context->that ) ;
+      CONTEXT c3 = newCONTEXT( task->context->closure, r2, task->context->this ) ;
       task->next = newTASK( r2, c3, r3, task->next, task->next ) ;
 
-      CONTEXT c2 = newCONTEXT( task->context->closure, oldlist, ref(WI_EQ) ) ;
+      CONTEXT c2 = newCONTEXT( task->context->closure, oldlist, ref(WI_EQEQ) ) ;
       task->next = newTASK( oldlist, c2, r2, task->next, task->next ) ;
 
-      task->next = newTASK( ref(newMERGELISTiterator( task->context->this, r1 )), task->context, ref(NONE), task->next, task->next ) ;
+
+      task->next = newTASK( ref(newMERGELISTiterator( ref(C(OBSERVER,PTHIS)->state->value), r1 )), task->context, ref(NONE), task->next, task->next ) ;
 
     } else {
 
@@ -1628,37 +1593,21 @@ T( 'LISTset', 'LIST', None, (), """
     task->next = newTASK( task->context->that, c1, r1, task->next, task->next ) ;
 """ )
 
-T( 'LISTset_dep', 'LIST', None, (
-  A( 'REFERENCE', 'cond' ),
-), """
-    if ( NOTNONE( THIS->cond->value ) ) {
-      MOD_ON( exit, PTHIS ) ;
-    }
-    USE_ON( exit, PTHAT ) ;
-    PSTHIS->length = 0 ;
-    PSTHIS->data = c(REFS,NULL) ;
-    RASET( task->result, PTHIS ) ;
-    REFERENCE r1 = ref(NONE) ;
-    task->next = newTASK( ref(newMERGELISTiterator( task->context->this, r1 )), task->context, ref(NONE), task->next, task->exit ) ;
-    CONTEXT c1 = newCONTEXT( task->context->closure, task->context->that, ref(WI_each) ) ;
-    task->next = newTASK( task->context->that, c1, r1, task->next, task->next ) ;
-""" )
-
-
 T( 'LISTITERATOR', None, None, (
   A( 'LIST', 'list' ),
   A( 'n_integer', 'index' ),
-  A( 'ANY', 'v' ),
+  A( 'REFERENCE', 'v' ),
 ), """
   DO_TYPE ;
-  ONWID( WI_value, THIS->v ) ;
+  ONWID( WI_clone, PTHIS ) ;
+  ONWID( WI_value, THIS->v->value ) ;
   IFWID( WI_next,
     if ( THIS->index < THIS->list->length ) {
-      THIS->v = any(THIS->list->data[THIS->index++]->value) ;
+      THIS->v = ref(THIS->list->data[THIS->index++]->value) ;
     } else {
-      THIS->v = any(NONE) ;
+      THIS->v = ref(NONE) ;
     }
-    RETURN( THIS->v ) ;
+    RETURN( THIS->v->value ) ;
   )
 """ )
 
@@ -1670,7 +1619,7 @@ T( 'APPENDLISTaction', 'LIST', None, (), """
 """ )
 
 T( 'SETCUSTOMLIST', 'TYPE', 'TYPE', (), """
-  RETURN( listNEW( PSTHAT ) ) ;
+  RETURN( listNEW ) ;
 """ )
 
 T( 'MERGELISTaction', 'LIST', None, (), """
@@ -1683,17 +1632,17 @@ T( 'MERGELISTaction', 'LIST', None, (), """
     MOD_ON( next, PTHIS ) ; /* missing test */
 """ )
 
-T( 'MERGELISTiterator', 'LIST', None, (
+T( 'MERGELISTiterator', None, None, (
   A( 'REFERENCE', 'target' ),
   A( 'REFERENCE', 'source' ),
 ), """
   REFERENCE r1 = ref(NONE) ;
-  task->next = newTASK( ref(newMERGELISTappend( task->action, r1 )), task->context, task->result, task->next, task->exit ) ;
+  task->next = newTASK( ref(newMERGELISTappend( ref(THIS), r1 )), task->context, task->result, task->next, task->exit ) ;
   CONTEXT c1 = newCONTEXT( task->context->closure, THIS->source, ref(WI_next) ) ;
   task->next = newTASK( THIS->source, c1, r1, task->next, task->next ) ;
 """ )
 
-T( 'MERGELISTappend', 'LIST', None, (
+T( 'MERGELISTappend', None, None, (
   A( 'REFERENCE', 'iterator' ),
   A( 'REFERENCE', 'element' ),
 ), """
@@ -1709,47 +1658,23 @@ T( 'MERGELISTappend', 'LIST', None, (
 	####	tuple
 
 T( 'TUPLE', None, None, (
-  A( 'TYPE', 'type' ),
-  A( 'n_integer', 'length' ),
-  A( 'REFS', 'data' ),
+  A( 'LIST', 'list' ),
 ), """
-  TYPE_RESPONSE( SEQ_type ) ;
-  DO_TYPE ;
-  METHOD( WI_EQEQ, SEQ_type, newSETCOMPAREaction() ) ;
-  METHOD( WI_join, STRING_type, newJOINaction() ) ;
-  IFWID( WI_toSUBstring, task->next = newTASK( ref(newSETTOSTRaction()), task->context, task->result, task->exit, task->exit ) ; );
-  IFWID( WI_all, task->next = newTASK( ref(newSETALLaction()), task->context, task->result, task->exit, task->exit ) ; );
 
-//  METHOD( WI_assort, TUPLE_type, newASSORTaction() ) ;
-  ONWID( WI_length, newNUMBER( THIS->length ) ) ;
-  ONWID( WI_each, newTUPLEITERATOR( THIS, 0, any(NONE) ) ) ;
-  NOMOREWIDS ;
-  task->next = REC( task, THIS->type, THIS_R, ref(newAPPENDTUPLEaction()), task->next ) ;
-""" )
-
-T( 'TUPLEITERATOR', None, None, (
-  A( 'TUPLE', 'tuple' ),
-  A( 'n_integer', 'index' ),
-  A( 'ANY', 'v' ),
-), """
-  DO_TYPE ;
-  ONWID( WI_value, THIS->v ) ;
-  IFWID( WI_next,
-    if ( THIS->index < THIS->tuple->length ) {
-      THIS->v = any(THIS->tuple->data[THIS->index++]->value) ;
-    } else {
-      THIS->v = any(NONE) ;
+  if ( PTHAT->objective == TID_type->instance_objective ) {
+    if ( c( n_integer, task->context->that->value ) != c( n_integer, TUPLE_type->id ) ) {
+      RETURN( NONE ) ;
     }
-    RETURN( THIS->v ) ;
-  )
+  }
+
+  DO_TYPE ;
+  IFWID( WI_clone,
+    LIST list = listNEW ;
+    listMERGE( list, THIS->list ) ;
+    RETURN( newTUPLE( list ) ) ;
+  ) ;
+  task->next = newTASK( ref(THIS->list), task->context, task->result, task->next, task->exit ) ;
 """ )
-
-T( 'APPENDTUPLEaction', 'TUPLE', None, (), """
-  tupleAPPEND( PSTHIS, ref(PTHAT) ) ;
-  RETURN( PTHIS ) ;
-""" )
-
-
 
 	####	iterator
 
@@ -1769,10 +1694,10 @@ T( 'ITERATOR', None, None, (
   )
 """ )
 
-T( 'ITERATORcatch', None, None, (
+T( 'ITERATORcatch', None, 'ELEMENT', (
   A( 'REFERENCE', 'iterator' ),
 ), """
-  RASET( C(ITERATOR,THIS->iterator->svalue)->v_ref, PTHAT ) ;
+  RASET( C(ITERATOR,THIS->iterator->svalue)->v_ref, PSTHAT->object ) ;
   C(ITERATOR,THIS->iterator->svalue)->inner = task->exit ;
   task->next = C(ITERATOR,THIS->iterator->svalue)->outer ;
 """ )
@@ -1873,6 +1798,7 @@ T( 'WORD', None, None, (
   A( 'WID', 'id' ),
 ), """
   DO_TYPE ;
+  ONWID( WI_clone, PTHIS ) ;
   ONWID( WI_toSUBstring, STRX( "%s", THIS->id->value->data ) ) ;
 """ )
 
@@ -1887,6 +1813,7 @@ T( 'PHRASE', None, None, (
   A( 'LIST', 'value' ),
 ), """
   DO_TYPE ;
+  ONWID( WI_clone, PTHIS ) ;
 """ )
 
 T( 'PHRASEconst', None, None, (), """

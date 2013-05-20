@@ -3,12 +3,10 @@
 defun (: 'tf' ( any ) [
   ( that > 0 else [ return ( none ) ] .)
   ( var (: 'a' ( that ) ) .)
-  ( a throw .)
+  ( yield ( a ) .)
   ( tf ( that - 1 ) .)
-  ( a throw .)
+  ( yield ( a ) .)
 ] )
 
-(: 3 2 1 1 2 3 == ( seq (: ( number ) [ tf 3 ] ) ) else [ error 'scope nesting' ] .)
-
-
+(: 3 2 1 1 2 3 == ( seq [ tf 3 ] ) else [ error 'scope nesting' ] .)
 

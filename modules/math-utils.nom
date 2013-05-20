@@ -1,11 +1,11 @@
 
 defun (: 'until-ceiling' ( param (: (: 'max' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
-  seq (: ( number ) [
+  seq [
     var (: 'elements' ( that the-seq each ) )
     loop [
-      that max >= ( elements next else [ stop ] ) else [ stop ] throw
+      yield ( that max >= ( elements next else [ stop ] ) else [ stop ] )
     ]
-  ] )
+  ]
 ] )
 
 defun (: 'dividable' ( param (: (: 'n' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
@@ -17,16 +17,16 @@ defun (: 'dividable' ( param (: (: 'n' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
 ] )
 
 var (: 'primes-seq' (
-  seq (: ( number ) [
+  seq [
     var (: 'known-primes' ( list ( number ) ) )
     var (: 'i' 1 )
     loop [
       ( i += 1 .)
       ( dividable (: ( i ) ( until-ceiling (: ( i sqrt ) ( known-primes ) ) ) ) else [
         ( known-primes ( i clone ) .)
-        ( i clone throw .)
+        ( yield ( i clone ) .)
       ] .)
     ]
-  ] )
+  ]
 ) )
 

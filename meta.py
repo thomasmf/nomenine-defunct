@@ -71,7 +71,7 @@ def BUILD() :
     '\n#undef THIS' +
     '\nn_string debug' + c.name + '( ANY o ) {' +
     '\n  char * s ;' +
-    '\n  asprintf( &s, "[%03x:%s' + c.debug.f + ']", c( n_integer, o ) >> 4 & 0xfff, "' + c.name + '"' +
+    '\n  asprintf( &s, "[%04x:%s' + c.debug.f + ']", c( n_integer, o ) >> 4 & 0xfff, "' + c.name + '"' +
     ( ''.join( [
       ', ' + d
     for d in c.debug.d ] ) ) + ' ) ;' +
@@ -100,7 +100,7 @@ def BUILD() :
 
   result_h += '\nn_void INITIALIZE_' + META.NAME + '_WIDS() ;'
   result_c += ( '\nn_void INITIALIZE_' + META.NAME + '_WIDS() {' +
-    '\n  WIDS = listNEW( WID_type ) ; ' + ( ''.join( [
+    '\n  WIDS = listNEW ; ' + ( ''.join( [
     '\n  WI_' + stringtocid( w ) + ' = widNEW( "' + w + '" ) ; '
   for w in T.wids ] ) ) + '\n}' )
 
@@ -166,7 +166,7 @@ def P( name, *parameters ) :
 //    OUT( assort 0 ) ;
 //    %(dbg)s
     if ( NOTNONE( THIS->tuple->value ) ) {
-      if ( C(TUPLE,THIS->tuple->value)->length == %(len)s ) {
+      if ( C(TUPLE,THIS->tuple->value)->list->length == %(len)s ) {
 //        OUT( assort 0.1 ) ;
         %(decl)s
         task->next = newTASK( ref(newPARAM%(name)s_1( %(attr)s )), task->context, task->result, task->next, task->exit ) ;
@@ -174,7 +174,7 @@ def P( name, *parameters ) :
       }
     }
   """ % { 'name':name, 'len':len(parameters),
-    'dbg': ( ''.join( [ 'LOG( C(TUPLE,THIS->tuple->value)->data[%s]->value ) ;' % str( i ) for i in range( len(parameters) ) ] ) ),
+    'dbg': ( ''.join( [ 'LOG( C(TUPLE,THIS->tuple->value)->list->data[%s]->value ) ;' % str( i ) for i in range( len(parameters) ) ] ) ),
     'attr': ( ', '.join( [ p.n + '_ref' for p in parameters ] ) ),
     'decl': ( ''.join( [ """
         REFERENCE %(name)s_ref = refNEW( %(cls)s_type, any(NONE) ) ;
@@ -182,7 +182,7 @@ def P( name, *parameters ) :
       """ % { 'name':p.n, 'cls':p.c } for p in parameters ] ) ),
     'check': ( ''.join( [ """
 //        LOG( %(name)s_ref_ref ) ;
-        CONTEXT c%(name)s = newCONTEXT( task->context->closure, %(name)s_ref_ref, ref(newNOUN( C(TUPLE,THIS->tuple->value)->data[%(i)s] )) ) ;
+        CONTEXT c%(name)s = newCONTEXT( task->context->closure, %(name)s_ref_ref, ref(newNOUN( C(TUPLE,THIS->tuple->value)->list->data[%(i)s] )) ) ;
         task->next = newTASK( %(name)s_ref_ref, c%(name)s, ref(NONE), task->next, task->next ) ;
     """ % { 'i':i, 'name':parameters[i].n } for i in range( len(parameters) ) ] ) )
   } )

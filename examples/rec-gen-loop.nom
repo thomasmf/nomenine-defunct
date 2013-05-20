@@ -1,12 +1,8 @@
 
 defun (: 'recgen' ( number ) [
-  ( that -- throw .)
+  ( yield ( that -- ) .)
   that > 0 then [ recgen ( that ) ]
 ] )
 
-defun (: 'recprint' ( iterator ) [
-  that next delog then [ recprint ( that ) ]
-] )
-
-( recprint ( gen (: ( number ) [ recgen 10 ] ) each ) .)
+( console write ( seq [ recgen 10 ] ) newl .)
 

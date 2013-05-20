@@ -1,6 +1,6 @@
 
-dep (: 'x1' 0 [ y1 + 10 / 5 ] )
-dep (: 'y1' 0 [ x1 * 5 - 10 ] )
+var (: 'x1' ( 0 em [ y1 + 10 / 5 ] ) )
+var (: 'y1' ( 0 em [ x1 * 5 - 10 ] ) )
 
 ( x1 = 30 .)
 ( x1 == 30 else [ error 'x1 dep 1' ] .)
@@ -10,8 +10,8 @@ dep (: 'y1' 0 [ x1 * 5 - 10 ] )
 ( x1 == 8 else [ error 'x1 dep 2' ] .)
 ( y1 == 30 else [ error 'y1 dep 2' ] .)
 
-dep (: 'x2' 1 [ y2 + 4 sqrt ] )
-dep (: 'y2' 1 [ x2 * ( x2 ) - 4 ] )
+var (: 'x2' ( 1 em [ y2 + 4 sqrt ] ) )
+var (: 'y2' ( 1 em [ x2 * ( x2 ) - 4 ] ) )
 
 ( y2 = 12 .)
 ( x2 == 4 else [ error 'x2 dep 1' ] .)
@@ -40,22 +40,22 @@ dep (: 'y2' 1 [ x2 * ( x2 ) - 4 ] )
 ( x2 == 15 else [ error 'y2 dec 4' ] .)
 
 
-dep (: 'a' 0 [ 10 / ( b + 10 ) ] )
-dep (: 'b' 0 [ 10 / ( a - 30 ) ] )
-dep (: 'c' 0 [ a + ( b ) ] )
+var (: 'a' ( 0 em [ 10 / ( b + 10 ) ] ) )
+var (: 'b' ( 0 em [ 10 / ( a - 30 ) ] ) )
+var (: 'c' ( 0 em [ a + ( b ) ] ) )
 
 ( b + ( a ) == ( c ) else [ error 'converge test 1' ] .)
 ( 0 != ( a ) else [ error 'converge test 2' ] .)
 ( 0 != ( b ) else [ error 'converge test 3' ] .)
 ( 0 != ( c ) else [ error 'converge test 4' ] .)
 
-dep (: 'i1' 0 [ i1 < 10 then [ i1 + 1 ] else [ 10 ] ] )
+var (: 'i1' ( 0 em [ i1 < 10 then [ i1 + 1 ] else [ 10 ] ] ) )
 
 ( il = 10 .)
 
 ( i1 == 10 else [ error 'count dep' ] .)
 
-dep (: 'i2' 0 [ ( i2 .) 10 ] )
+var (: 'i2' ( 0 em [ ( i2 .) 10 ] ) )
 
 ( i = 3 .)
 ( i2 == 10 else [ error 'immutable dep' ] .)
@@ -77,9 +77,9 @@ var (: 'o2' ( 10 em [ ( i2 ! .) ( v2 += 1 .) ] ) )
 ( v2 == 3 else [ error 'obs dep 4' ] .)
 
 
-var (: 'o4' ( none has (: 'a1' 5 ) has (: 'a2' 6 ) em [ o4 ! ] ) )
+var (: 'o4' ( new has (: 'a1' ( 5 en ) ) has (: 'a2' ( 6 en ) ) em [ o4 ! ] ) )
 
-var (: 'd4' ( static (: 0 [ o4 a1 + ( o4 a2 ) ] ) ) )
+var (: 'd4' ( 0 em [ o4 a1 + ( o4 a2 ) ] ) )
 
 ( d4 == 11 else [ error 'obs prop 1' ] .)
 
@@ -92,10 +92,54 @@ var (: 'd4' ( static (: 0 [ o4 a1 + ( o4 a2 ) ] ) ) )
 
 var (: 'x4' ( 10 em [ x4 ! ] ) )
 
-var (: 'u1' ( none inv (: 'x' 1 [ x4 * 10 ] ) ) )
+var (: 'u1' ( none has (: 'x' ( 1 em [ x4 * 10 ] ) ) ) )
 
 ( u1 x == 100 else [ error 'inv 1' ] .)
 
 ( x4 = 11 .)
 ( u1 x == 110 else [ error 'inv 2' ] .)
+
+
+var (: 'v2' ( none em [ 4 en ] ) )
+( v2 == 4 else [ error 'v2 1' ] .)
+
+( v2 = ( 123 en ) .)
+( v2 == 123 else [ error 'v2 3' ] .)
+
+( v2 = ( [ 3 4 5 ] en ) .)
+( v2 == [ 3 4 5 ] else [ error 'v2 4' ] .)
+
+
+var (: 'a1' ( 5 en ) )
+var (: 'a2' ( 0 em [ a1 * 3 ] ) )
+var (: 'a3' ( [] em [ [] ( a2 / 2 ) ( a2 / 4 ) ( a2 / 8 ) ( a2 / 16 ) ] ) )
+
+( a2 == 15 else [ error 'a2 1' ] .)
+( a3 == [ 7.5 3.75 1.875 0.9375 ] else [ error 'a3 1' ] .)
+
+( a1 = 3 .)
+
+( a2 == 9 else [ error 'a2 2' ] .)
+( a3 == [ 4.5 2.25 1.125 0.5625 ] else [ error 'a3 2' ] .)
+
+( a1 = ( 4 en ) .)
+
+( a2 == 12 else [ error 'a2 3' ] .)
+( a3 == [ 6 3 1.5 0.75 ] else [ error 'a3 3' ] .)
+
+
+
+var (: 'x8' ( 2 en ) )
+( x8 == 2 else [ error 'x8 2' ] .)
+
+( x8 = 3 .)
+( x8 == 3 else [ error 'x8 3' ] .)
+
+( x8 = ( 4 em [] ) .)
+( x8 == 4 else [ error 'x8 4' ] .)
+
+( x8 = ( 5 en ) .)
+( x8 == 5 else [ error 'x8 5' ] .)
+
+
 

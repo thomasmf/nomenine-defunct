@@ -9,7 +9,7 @@ defun (: 'f2' ( seq ) [
   list ( number ) 1 merge ( that ) 10
 ] )
 
-( f2 ( list ( number ) 4 5 6 ) == (: 1 4 5 6 10 ) else [ error 'f2' ] .)
+( f2 ( list ( number ) 4 5 6 ) == ( [] 1 4 5 6 10 ) else [ error 'f2' ] .)
 
 defun (: 'f3' ( param (: (: 'p1' ( number ) ) (: 'p2' ( number ) ) ) ) [
   that p1 + ( that p2 ) / 2
@@ -47,6 +47,27 @@ var (: 'f8' ( fun (: ( fun ) [
 ] ) ) )
 
 ( f8 ( f7 9 ) == 95 else [ error 'f8' ] .)
+
+defun (: 'fo' ( param (: (: 'x' ( number ) ) (: 'y' ( number ) ) ) ) [
+  that x * ( that y )
+] )
+
+defun (: 'fo' ( number ) [
+  that * ( that )
+] )
+
+( fo (: 4 5 ) == 20 else [ error 'fo 1' ] .)
+
+( fo 4 == 16 else [ error 'fo 2' ] .)
+
+
+var (: 'o1' ( new
+  does (: 'go' ( string ) [ 0 ] )
+  does (: 'go' ( number ) [ that * 10 ] )
+) )
+
+( o1 go 'test 1' == 0 else [ error 'o1 go 1' ] .)
+( o1 go 99 == 990 else [ error 'o1 go 2' ] .)
 
 
 

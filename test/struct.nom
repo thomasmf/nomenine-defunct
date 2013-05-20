@@ -2,9 +2,9 @@
 var (: 's1' ( struct (:
   (: 'a' ( number ) )
   (: 'b' ( number ) )
-) ) )
+) en ) )
 
-var (: 'v1' ( s1 (: 7 8 ) ) )
+var (: 'v1' ( s1 (: 7 8 ) en ) )
 
 ( v1 a == 7 else [ error 'v1 a' ] .)
 ( v1 b == 8 else [ error 'v1 b' ] .)
