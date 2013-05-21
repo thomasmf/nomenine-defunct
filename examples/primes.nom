@@ -23,8 +23,8 @@ var (: 'primes-seq' (
     loop [
       ( i += 1 .)
       ( dividable (: ( i ) ( until-ceiling (: ( i sqrt ) ( known-primes ) ) ) ) else [
-        ( known-primes ( i clone ) .)
-        ( yield ( i clone ) .)
+        ( known-primes ( i ) .)
+        ( yield ( i ) .)
       ] .)
     ]
   ]

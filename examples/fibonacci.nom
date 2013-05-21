@@ -3,7 +3,7 @@ var (: 'fib-seq' (
   seq [
     var (: 'v0' 0 ) var (: 'v1' 1 ) var (: 'v2' 0 )
     loop [
-      ( yield ( v2 clone ) .)
+      ( yield ( v2 ) .)
       ( v0 = ( v1 ) .)
       ( v1 = ( v2 ) .)
       ( v2 = ( v0 + ( v1 ) ) .)
@@ -33,5 +33,5 @@ defun (: 'ceiling' ( param (: (: 'max' ( number ) ) (: 'the-seq' ( seq ) ) ) ) [
 
 var (: 'first-100' ( getn (: 100 ( fib-seq ) ) ) )
 
-( console write ( ceiling (: ( 2 pow 52 ) ( first-100 ) ) join ( ',' tab ) ) newl .)
+( console write ( ceiling (: 1000000 ( first-100 ) ) ) newl .)
 
