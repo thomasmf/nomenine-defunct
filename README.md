@@ -3,9 +3,6 @@ Nominine
 
 Nominine is a simple programming language.
 
-It is an object-oriented language at heart,
-but function-like abstractions and sets have come to play an increasingly important role as the project progress.
-
 The syntax is somewhat unusual,
 but I think most people will find it to be straight forward
 in addition to having tons of expressiveness.
@@ -20,29 +17,10 @@ I am trying to do that in the documentation on the website.
 This is all a work in progress.
 
 
-Goals
------
-
-The goal is to build a good programming language.
-I cannot give a more specific goal than that.
-
-When it comes to programming languages,
-Nominine or something along those lines,
-is a good path to go down.
-That is my opinion and that is the path I am going.
-
-
 Website
 -------
 
 I have a website with tutorial and discussion of some examples at [nominine.org](http://nominine.org/).
-
-I am not satisfied with the documentation so far.
-It is not that I need it to look and sound very professional,
-but I hope to, over time, mold it into something that explains the different ideas in a simple and direct fashion.
-Currently it is mostly bits and pieces.
-
-I really appreciate any feedback on this.
 
 
 Example
@@ -50,10 +28,10 @@ Example
 
 Here is an example of what source code looks like:
 
-        defun (: 'sort' ( set ) [
+        defun (: 'sort' ( seq ) [
 
-          def (: 'elements' ( that each ) )
-          def (: 'pivot' ( elements next else [ return [] ] ) )
+          var (: 'elements' ( that each ) )
+          var (: 'pivot' ( elements next else [ return [] ] ) )
           var (: 'low' [] )
           var (: 'high' [] )
 
@@ -63,15 +41,15 @@ Here is an example of what source code looks like:
             else [ low ( elements value ) ]
           ]
 
-          sort ( low ) ( pivot ) merge( sort ( high ) )
+          sort ( low ) ( pivot ) merge ( sort ( high ) )
 
         ] )
 
 This defines a function 'sort' which can be used to sort a list:
 
-        ( sort (: 5 4 6 3 7 9 6 3 ) )
+        ( console write ( sort [ 5 4 6 3 7 9 6 3 ] ) newl .)
 
-It returns a sorted list.
+Will output a sorted list to console.
 
 
 Download
@@ -109,5 +87,5 @@ To run the examples write:
         ./nominine examples/fibonacci.n
 
 
-Have fun and feel free to contact me. I appreciate feedback to thomasmf at nominine org.
+Feel free to contact me. I appreciate feedback to thomasmf at nominine org.
 

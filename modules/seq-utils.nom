@@ -2,14 +2,6 @@
 
 new
 
-does (: 'print-all' ( seq ) [
-  ( 'print-all' delog .)
-  var (: 'elements' ( that each ) )
-  loop [
-    elements next else [ return ( none ) ] delog
-  ]
-  that
-] )
 
 does (: 'range' ( param (: (: 'from' ( number ) ) (: 'to' ( number ) ) ) ) [
   seq [
@@ -25,8 +17,8 @@ does (: 'sort' ( seq ) [
 
   var (: 'elements' ( that each ) )
   var (: 'pivot' ( elements next else [ return [] ] ) )
-  var (: 'low' ( [] en ) )
-  var (: 'high' ( [] en ) )
+  var (: 'low' [] )
+  var (: 'high' [] )
 
   loop [
     elements next else [ stop ] > ( pivot )

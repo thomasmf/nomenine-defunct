@@ -3,8 +3,8 @@ defun (: 'sort' ( seq ) [
 
   var (: 'elements' ( that each ) )
   var (: 'pivot' ( elements next else [ return [] ] ) )
-  var (: 'low' ( [] en ) )
-  var (: 'high' ( [] en ) )
+  var (: 'low' [] )
+  var (: 'high' [] )
 
   loop [
     elements next else [ stop ] > ( pivot )
