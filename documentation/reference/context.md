@@ -33,20 +33,18 @@ That
 
 produces what acts as a parameter to the current code block.
 
-**that** is usually used in functions or methods where it behaves like the keyword "arguments" in other OO languages.
 **that** is the parameter of a function or method.
-
 
 The following example will define the object **test-object** that has a method **test-method**.
 The method will write **this** and **that** to console.
 
 The last line calls the method.
 
-        def (: 'test-object' ( new
+        var (: 'test-object' ( new
           does (: 'test-method' ( any ) [
-            console write ( this ) ( that )
+            console write ( this ) newl ( that )
           ] )
-          noms (: 'to-string' [ 'this is the value of this' newl ] )
+          noms (: 'to-string' [ 'this is the value of this' ] )
         ) )
 
         ( test-object test-method ( 'this is the value of that' newl ) .)
@@ -58,59 +56,22 @@ The output of the example is
 
 *Related types: [object](/documentation/reference/object.html), [function](/documentation/reference/object.html), [type](/documentation/reference/type.html)*
 
-<hr>
-
-Def
----
-        ( def (: 'test-object' 123 ) .)
-
-defines a new object **test-object** to be the **number** 123.
-**test-object** will always refer to the object it is set to initially.
-The object referred to, in this case the **number** 123, does not have to be immutable.
-
-**def** is often used to give name to types and other more permanent object.
-
-**def** will return the **context** in which it is used.
-The above example is usually equivalent to:
-
-        def (: 'test-object' 123 )
 
 <hr>
 
 Var
 ---
 
-**var** has two forms. Without the type specified:
+**var** defines a new variable:
 
-        ( var (: 'test-var' 123 ) .)
+        ( var (: 'a' 123 ) .)
 
-and with the type specified:
-
-        ( var (: 'test-var' ( number ) 123 ) .)
-
-**var** defines a new variable.
-In the example, the
-
-**test-var** will always refer to an object of the given type.
-If no type is given, the variable can refer to an object of **any** type.
-
-**var** is used to create a word that can refer to different objects.
-
-To make **test-var** refer to a different object use a noun.
-
-        ( test-var ( 123 !) .)
-
-Now **test-var** refers to a new object.
-The value of the new object is, coincidentally, the same as the previous.
+Here **a** is defined to be the number 123.
 
 **var** will return the **context** in which it is used.
-The above example is usually equivalent to:
+The above example is therefore equivalent to:
 
-        var (: 'test-var' 123 )
-
-or
-
-        var (: 'test-var' ( number ) 123 )
+        var (: 'a' 123 )
 
 <hr>
 
@@ -122,10 +83,10 @@ defines a new **function** that takes a **number** as parameter and returns the 
 
 **defun** is short hand for:
 
-        ( def (: 'test-object' ( fun (: ( number ) [ that * ( that ) ] ) ) ) .)
+        ( var (: 'test-object' ( fun (: ( number ) [ that * ( that ) ] ) ) ) .)
 
 **defun** will return the **context** in which it is used.
-The above example is usually equivalent to:
+The above example is therefore equivalent to:
 
         defun (: 'test-object' ( number ) [ that * ( that ) ] )
 
@@ -135,9 +96,16 @@ The above example is usually equivalent to:
 
 Defact
 ------
+
+**defact** is used to define new types.
+Type in nominine can both be used to construct objects as well as discriminating between objects.
+
         ( defact (: 'test-type' ( number ) [ that * ( that ) ] ) .)
 
 defines a new **type** which constructor takes a **number** as parameter and returns the square of that **number**.
+The object produced is "signed".
+If, for example, a function is defined to take **test-type** as parameter, then an ordinary **number** will not do.
+The parameter object in that situation must be constructed using the specific **test-type** factory.
 
 **defact** is short hand for:
 
@@ -158,6 +126,7 @@ Nom
 
 defines a new **word** which is equivalent to writing the quoted expression as an expression,
 except that the quoted expression is evaluated in its own context.
+Static scoping and closures apply.
 
 **nom** will return the **context** in which it is used.
 The above example is usually equivalent to:

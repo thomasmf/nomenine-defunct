@@ -12,6 +12,7 @@ There are multiple ways to construct types:
  - cat
  - struct
 
+
 <hr>
 
 Fact
@@ -29,6 +30,7 @@ Usually the parameter is a function:
 
 produces a type object which produces instances when given an object of **some-type** as parameter.
 
+
 <hr>
 
 Cat
@@ -38,15 +40,20 @@ Cat
 produces a **type** where the quoted expression is used by the underlying dispatch mechanism to determine if an object is of
 the particular type.
 
-        ( var (: 'x' ( cat [ 0 < ( that ) ] ) 123 ) .)
+        defun (: 'f' ( cat [ 0 < ( that ) ] ) [
+          100 / ( that ) 
+        ] )
 
-produces a variable that can only contain something that is greater than zero.
+Defines a function **f** that takes a positive number as a parameter.
+The actual parameter recieved by **f** is the result of the expression that defines the category.
+
+Notice that categories cannot be instansiated.
 
 <hr>
 
 Struct
 ------
-        def (: 't' ( struct (: (: 'i' ( number ) ) (: 's' ( string ) ) ) ) )
+        var (: 't' ( struct (: (: 'i' ( number ) ) (: 's' ( string ) ) ) ) )
 
 produces a **type** which instances has a state with a **number** **i** and **string** **s**.
 

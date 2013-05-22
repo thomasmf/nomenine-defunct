@@ -27,12 +27,7 @@ Has
 ---
         ( some-object has (: 'a' ( some-attribute ) ) )
 
-or
-
-        ( some-object has (: 'a' ( some-type ) ( some-attribute ) ) )
-
 produces a new **object** which has an attribute **a**.
-If a **type** is specified, then the object refered to by the attribute can must be of that type.
 
 **has** for objects is similar to **var** for contexts.
 
@@ -54,18 +49,6 @@ produces a new **object** which has method named **m**.
 
 <hr>
 
-Defs
-----
-        ( some-object defs (: 'c' ( some-object ) ) )
-
-produces a new **object** where the **c** will always refere to **some-object**.
-
-**defs** for objects is similar to **def** for contexts.
-
-*Related types: [context](/documentation/reference/context.html)*
-
-<hr>
-
 Then
 ----
         ( some-object then [ ... ] )
@@ -81,5 +64,25 @@ Else
 
 evaluates the quoted expression iff **some-object** is **none**.
 The result is either **some-object** or the result of the quoted expression.
+
+<hr>
+
+En
+--
+        ( some-object en )
+
+creates an object which has state equal to **some-object** and can be used to create static dependencies.
+In a traditional programming language, this would amount to creating a reference to an object.
+Notice that **some-object** is cloned during this process so the original object remain independent.
+
+<hr>
+
+Em
+--
+        ( some-object em [ ... ] )
+
+creates an object which has an _initial state_ equal to **some-object** and can be used to create static dependencies.
+**...** is the definition of the new object.
+Notice that **some-object** is cloned during this process so the original object remain independent.
 
 
