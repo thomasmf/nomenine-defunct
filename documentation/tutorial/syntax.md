@@ -133,7 +133,8 @@ The result of evaluating this expression is
         15
         115
 
-In Nominine, which is interpreted, an expression is parsed into a list of objects, and then there is a loop that gives each object as the parameter of the result of the previous calculation.
+In Nominine, which is interpreted, an expression is parsed into a list of objects,
+and then there is a loop that gives each object as the parameter of the result of the previous calculation.
 
 In JavaScript, the loop might look something like:
 
@@ -142,7 +143,10 @@ In JavaScript, the loop might look something like:
           current_result = current_result( parameter )
         }
 
+It is a bit like one of those bouncy contraptions that people use to maim themselves on Youtube.
+
 Notice that **current_result** is initialized with **start_context**.
+
 
 <hr>
 
@@ -178,7 +182,7 @@ would therefore translate to the following ( translated Mininine expression ):
 
         start_context( newWord( 'a' ) )( newWord( 'b' ) )( newWord( 'c' ) )
 
-In this example **a** would be a variable in the current scope. **start_context**, representing the current scope,
+In this example **a** would be a variable in the current scope. **start_context** object, representing the current scope,
 would behave like it had an attribute named 'a'.
 
 <hr>
@@ -204,9 +208,11 @@ In Nominine there are the following literals and syntax elements:
 
         ( this is an expression )
 
-- Quoted expressions:
+- Quoted expressions/list:
 
         [ this is a quoted expression ]
+
+Notice that quoted expressions and lists are the same thing.
 
 <hr>
 
@@ -264,12 +270,6 @@ To translate the JavaScript expression
 into Nominine, one must write
 
         ( f (: ( a b ) ( c d ) ) )
-
-It may seem like a lot of parenthesis, but when placing an expression in a context, one can usually loose the outer parenthesis and get
-
-        f (: ( a b ) ( c d ) )
-
-which in my opinion is not bad.
 
 This expression could be translated into something like ( translated Mininine expression ):
 

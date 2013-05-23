@@ -5,6 +5,7 @@ layout: tutorial
 The idea
 ========
 
+
 <hr>
 
 Objects
@@ -27,45 +28,43 @@ The state of an object is simply called 'state', while the procedural part of th
 This is very close to the traditional definition of objects as having identity, state and behavior. It is common, I believe,
 to define behavior as a *set of methods*, but in Nominine behavior is just this single procedure.
 
+
 <hr>
 
 Objectives
 ----------
 
-An objective is a special procedure both with regards to its interface to the outside world as well as its expected behavior.
-
-In C syntax, an objective can be defined as a function with the following signature:
-
-        void objective( context ) ;
-
-An objective observes and modifies its context, which is passed as the only argument.
-
-The context can be any object, but it is practical to have a more specific definition.
-
-The definition of the context is ( pseudo code ):
-
-        task : {
-          reference action ;
-          context {
-            closure closure ;
-            reference this ;
-            reference that ;
-          } context ;
-          reference result ;
-          task next ;
-          task exit ;
-        }
-
-Note that objectives in Nominine takes a task object as a parameter.
-This task object contain a context.
-
-<hr>
-
-What the objective does
------------------------
+An objective takes a context object as its only argument.
 
 The task of the objective is to interpret the context and modify it accordingly.
 
-Typically an objective will set the result to some new or existing object
-or delegate the responsibility of dealing with the context to some other object.
+Basically an objective is an action and the context object is what the action is operating on.
+
+
+<hr>
+
+Contexts
+--------
+
+In Nominine, which is an object oriented programming language,
+contexts contain _this_, information about scope, information about parameters as well as information about tasks and continuations.
+Contexts also contain a _result_.
+
+Nominine uses only one type of context, but objectives can be divided into roughly three categories:
+
+- primitive actions that do whatever they need to do
+- methods that behave like regular methods
+- user-space objects that do dispatch and lookup identifiers
+
+Technically they are all the same, for example user-space-objects behave like methods where the method does dispatch and lookup identifier.
+
+From the viewpoint of functional programming, objects in Nominine are higher order functions.
+
+
+<hr>
+
+There is more
+-------------
+
+Actually there is not, but please read the next chapter for a better explanation of how Nominine works.
 

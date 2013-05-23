@@ -7,19 +7,15 @@ Nominine
 
 Nominine is a simple programming language.
 
-It is an object-oriented language with the addition of closures, lambdas and co-routines.
-
-<hr>
-
 Example
 -------
 
 Here is an example of what source code looks like:
 
-        defun (: 'sort' ( set ) [
+        defun (: 'sort' ( seq ) [
 
-          def (: 'elements' ( that each ) )
-          def (: 'pivot' ( elements next else [ return [] ] ) )
+          var (: 'elements' ( that each ) )
+          var (: 'pivot' ( elements next else [ return [] ] ) )
           var (: 'low' [] )
           var (: 'high' [] )
 
@@ -29,15 +25,15 @@ Here is an example of what source code looks like:
             else [ low ( elements value ) ]
           ]
 
-          sort ( low ) ( pivot ) merge( sort ( high ) )
+          sort ( low ) ( pivot ) merge ( sort ( high ) )
 
         ] )
 
 This defines a function 'sort' which can be used to sort a list:
 
-        ( sort (: 5 4 6 3 7 9 6 3 ) )
+        ( console write ( sort [ 5 4 6 3 7 9 6 3 ] ) newl .)
 
-It returns a sorted list.
+Will output a sorted list to console.
 
 <div class="nom-posts">
   {% for post in site.posts limit 5 %}

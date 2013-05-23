@@ -17,14 +17,12 @@ Types serve two purposes in Nominine.
 First of all they are used to discriminate between objects.
 If, for example, a function has a parameter type **string**,
 that functions action will only be triggered by giving a **string** as parameter.
-Similarly **set** objects in Nominine have element-type.
-It is possible to build **list** and **gen** ( generator ) objects that can only contain/throw a particular type of object.
 
 Secondly, types are used as *factories* to build objects.
 However, only **struct** and **fact** objects can be used to build other objects.
-**cat** objects are only used to discriminate between objects and never as factories.
 
-*There are currently no classes in Nominine. __fact__ is the closes to a class at the moment.*
+**cat** objects are only used to discriminate between objects and never as factories.
+In the future *static dependencies* will be used to instantiate *categories*.
 
 <hr>
 
@@ -47,7 +45,7 @@ defines **vector** to be a **struct** factory.
 yields a new **vector** object that has properties **x** equal 4 and **y** equal 7.
 
 Notice that __struct__ takes the same parameter as __param__.
-This is no coincidence. **struct** takes a **set** of **tuple** objects.
+This is no coincidence. **struct** takes a *tuple* of *tuples*.
 Each **tuple** object has a name that will be used as the name of the attribute,
 and a type that will be used as the type of the attribute.
 
@@ -133,7 +131,23 @@ Attributes behave like variables that are connected to an object instead of a sc
 
 adds 40 to bobs balance.
 
+Notice also that when building objects using *has* and *does*, they automatically have *=* and *==* defined.
+
+The assign method, *=*, is somewhat unusual in that it assign *state* and not *reference*.
+
+        var (: 'a1' ( account (: 'Alice' 50 ) ) )
+        var (: 'a2' ( account (: 'Bob' 60 ) ) )
+        
+        ( a1 = a2 .)
+
+*a1* now has name 'Bob' and balance 60, but changing the balance of *a2*, will *not* effect the balance of *a1*.
+*a1* is still a separate object after the assignment.
+
+*=* and *==* can be overloaded normally using *does*.
+
+
 <hr>
+
 
 Cat
 ---
@@ -172,5 +186,6 @@ Notice that categories are not invariance.
 Even if a number passes the **positive** test, it may later become negative.
 Therefore it is not really useful at this point to mix categories and factories.
 Categories can not be used as factories.
+
 
 

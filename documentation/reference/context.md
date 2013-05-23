@@ -142,10 +142,10 @@ Loop
         ( loop [ ... ] .)
 
 **loop** evaluates the quoted expression repeatedly like in a loop.
-The loop will not stop the word **stop** is used.
+The loop will stop when the word **stop** is used.
 
 **loop** will return the **context** in which it is used.
-The above example is usually equivalent to:
+The above example is equivalent to:
 
         loop [ ... ]
 
@@ -174,7 +174,7 @@ Stop
 ----
         ( stop )
 
-**stop** terminates loop.
+**stop** terminates the closest loop.
 
 *Related types:*
 
@@ -197,7 +197,7 @@ Throw
 -----
         ( throw ( some-object ) )
 
-Throws an object from a context so that it may be caught by a **catch** in a super-context.
+Throws an object from a context so that it may be caught by a **catch** in a parent context.
 
 The return value of **throw** is the value produced by the **catch**.
 

@@ -28,4 +28,11 @@ Apply
 produces a **function** that behaves like a method on the object **o**.
 The original function is not modified.
 
+Polymorphism
+------------
+
+If multiple functions are defined with the same name,
+then Nominine will effectively search for the closest definition that matches the type of the parameter.
+
+*Related tutorial: [functions](/documentation/tutorial/functions.html)*
 

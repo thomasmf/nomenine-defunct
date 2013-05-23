@@ -117,57 +117,40 @@ Notice the use of noun to update **f**.
 Polymorphism
 ------------
 
+If more than one method with the same name is defined on an object or more than one functions with the same name is defined in scope,
+dispatch will match the one with the parameter type matching the parameter object.
+
 The following is a polymorphic function:
 
-        def (: 'square' (
-          fun (: ( number ) [
+        defun (: 'square' ( number ) [
             that * ( that )
+        ] )
+
+        defun (: 'square' ( seq ) [
+          seq (: ( number ) [
+            var (: 'elements' ( that each ) )
+            loop [
+              square ( elements next else [ stop ] ) throw
+            ]
           ] )
-          is (
-            fun (: ( set ) [
-              gen (: ( number ) [
-                var (: 'elements' ( that each ) )
-                loop [
-                  square ( elements next else [ stop ] ) throw
-                ]
-              )
-            ] )
-          )
-        ) )
+        ] )
 
-*This syntax is not optimal. In the future there may be a more direct way to define polymorphic functions.*
-
-**square** is basically both a function that takes a number as a parameter and at the same time a function that takes a set
-as a parameter.
+will define one *square* function that takes a number as parameter as well as a *square* function that takes a sequence as parameter.
 
         ( square 5 )
 
 yields 25.
 
-        ( square (: 1 2 3 4 ) )
+        ( square [ 1 2 3 4 ] )
 
-yields the set of 1, 4, 9 and 16.
-Additionally, **square** yields a generator when it gets a set as a parameter.
-This means that the numbers are only calculated when needed.
-*More on generators later.*
+yields a lazy list that calculates the squares of the numbers.
+
+        ( console write ( square [ 1 2 3 4 ] ) newl .)
+
+will output
+
+        [ 1 4 9 16 ]
 
 Polymorphic functions can also be used as methods.
 
-<hr>
-
-Don't
------
-
-Generally, any object can be any other object, so all objects can be a function.
-
-        ( 234 is ( function (: ( string ) [ ( console write that ':' this newl .) this ] ) ) )
-
-yields a number that is also a function.
-If the variable **x** held this number, writing
-
-        ( x 'current value' + 1000 )
-
-yield 1234 and output "current value: 234".
-
-*I do not encourage doing this kind of trickery. It is just an example.*
 

@@ -16,25 +16,30 @@ Common for all sequences is that they have an **each** property that produces an
 
 produces an iterator.
 
+*Notice, however, that a tuple is not recognized as a sequence when passed as a parameter.*
+
 <hr>
 
 List
 ----
 
-        ( list ( some-type ) )
-
-produces a **list** of type **some-type**.
-
         [ ... ]
 
-produces a **list** of type **any**, but do not confuse quoted expressions with lists.
-The elements in them do not behave the same way.
+produces a **list**.
 
 In addition to being a **seq**, a **list** has the **length** property.
 
         ( some-list length )
 
 produces the length of **some-list**.
+
+To append elements to a list, simply write:
+
+        ( some-list ( some-element ) ( some-other-element ) .)
+
+To merge elements from one list into another use the *merge* method:
+
+        ( some-list merge ( some-other-list ) .)
 
 <hr>
 
@@ -48,7 +53,7 @@ produces a **tuple** with the elements 1, 2 and 3.
 Notice that a **tuple** does not classify as a **seq**.
 This means that tuples cannot be given as arguments where sequences are expected.
 
-Tuples are used with **struct** and **param**.
+Tuples are basically only used to handle multiple parameters.
 
 <hr>
 

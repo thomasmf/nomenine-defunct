@@ -159,41 +159,15 @@ So for the previous expression to yield the expected result, one must write:
 
 <hr>
 
-Modifying variables
--------------------
+Assignment
+----------
 
-A variable represent a reference to an object.
-It is possible to make a variable reference a different object.
+Assignment is a method that works on most objects.
 
-        ( x ( 'abc' !) .)
+        ( x = 5 .)
 
-makes our previously created variable **x** reference the string 'abc' instead of the number it previously referenced.
-**!** creates a wrapper around the string so that the reference represented by the variable **x** understands that it
-should start referring to the string instead of whatever it referred to earlier.
-It is basically an assignment for references.
+sets **x** to be 5. Notice that it is an imperative.
 
-        var (: 'y' 10 )
-        ( x ( y !) .)
-
-creates a new variable **y**, and sets it to reference a number with the value 10.
-Then **x** is set to reference the same object as **y**.
-
-        ( x = 100 .)
-
-changes the value of the object referenced by **x**, which incidentally is the same object as **y** references.
-Both **x** and **y** are now 100.
-This is the same behavior that programming languages like JavaScript and Python have for user-defined objects.
-These languages, however, treat numbers as primitives, but in Nominine numbers are just ordinary objects.
-
-        ( x ( 200 !) .)
-
-sets **x** to reference a new number object with value 200.
-Now **x** and **y** refer to different objects again.
-
-        ( x = ( y / 4 ) .)
-
-Changes the value of **x** to be 25.
-**y** is not effected by this assignment, because **x** and **y** refer to different objects.
 
 <hr>
 
@@ -235,7 +209,7 @@ All comparisons on numbers and other objects return their argument iff the compa
 
         ( 0 < ( a ) )
 
-yields the object **a** iff the value of **a** is greater than 0.
+yields **a** iff the value of **a** is greater than 0.
 Otherwise the expression yields **none**.
 
         ( a > 0 )
@@ -263,12 +237,18 @@ yields **a** iff **a** is positive, otherwise it yields **b**.
 
 yields **b** iff a is positive otherwise it yields **none**.
 
+*then* and *else* can be chained.
+
+        ( a > 0 then [ b ] else [ c ] )
+
+yields **b** if a is greater than zero otherwise it yields **c**.
+
 <hr>
 
 Loops
 -----
 
-Nominine only has one loop construct. This is the infinite but stoppable loop.
+Nominine only has one loop construct. This is the endless but endable loop.
 
 **loop** gives a simple endless loop that must be terminated using **stop**.
 
@@ -318,65 +298,58 @@ one can write
 
 The same goes for **loop** and most of the other context methods.
 
-This is the same as returning *this* from methods in Python so that one can write ( Python, pseudo code ):
+This is the same as returning *this* from methods in Python so that one can write ( JavaScript, pseudo code ):
 
         start_context.var( 'x', 123 ).var( 'y', 123 )
 
-instead of having to write ( Python, pseudo code ):
+instead of having to write ( JavaScript, pseudo code ):
 
-        start_context.var( 'x', 123 ) ;
-        start_context.var( 'y', 123 ) ;
+        start_context.var( 'x', 123 )
+        start_context.var( 'y', 123 )
 
 <hr>
 
 Lists
 =====
 
-In Nominine **set** is the super-type for **list**, **gen** ( generator ), and **tuple**.
-These are discussed in detail later.
-For now I'll show some operations on **tuple** objects.
-**tuple** and **list** objects are basically the same, except it is easier to build first order tuples.
+Lists and quoted expressions are the same.
 
-        (: 1 2 3 )
+        [ 1 2 3 ]
 
-yields a **tuple** with the elements 1, 2 and 3.
-Also **tuple** objects can contain any type of element, where as **list** objects have a specific element type.
+is the list with elements 1, 2 and 3.
+However, expressions in quoted expressions will not be evaluated.
+They remain *phrase* objects which is often not what one wants.
 
-<hr>
+Luckily, lists have implicit append.
+The normal way to build a list where the elements may be given as expressions is:
 
-Concatenation
--------------
+        ( [] ( a ) ( b ) ( c ) )
 
-The construction of a **tuple** already does concatenation, when appending each of the elements,
-but it can be useful to build lists one element at a time.
+This first creates an empty list *\[\]*,
+and then appends the objects *a*, *b* and *c* to that list.
 
-        var (: 'l' (:) )
+To merge lists, use *merge*:
 
-creates a variable **l** that has an empty tuple.
-It can be written to console
+        ( l1 merge ( l2 ) .)
 
-        ( console write ( l ) .)
+Merges the list *l2* into l1.
+This operation changes *l1*.
 
-which outputs "\[\]" like expected.
+Also, assignment on lists are actually copying elements:
 
-        ( l 10 20 30 .)
+        ( l1 = ( l2 ) .)
 
-appends the object 10, 20 and 30 to **l**.
-Writing **l** now outputs
+*l1* now contains the elements of *l2*, but *l1* and *l2* are still separate lists.
 
-        [ 10, 20, 30 ]
-
-Notice that there is no symbol, word or operator for appending elements.
-A **tuple** will append any element it gets.
 
 <hr>
 
 Iteration
 ---------
 
-Common to all **set** objects, is that one can iterate over their elements.
+Common to all **seq** objects, is that one can iterate over their elements.
 
-        var (: 'l' (: 10 20 30 ) )
+        var (: 'l' ( [] 10 20 30 ) )
 
         var (: 'elements' ( l each ) )
 
@@ -390,14 +363,14 @@ will output
         20
         30
 
-In order to iterate over elements in a **set**, one must first produce an **iterator**.
-To do this one uses the **each** property of the **set**.
+In order to iterate over elements in a **seq**, one must first produce an **iterator**.
+To do this one uses the **each** property of the **seq**.
 
         ( l each )
 
 yields an **iterator**.
-An **iterator** has a property, **next**, that fetches the next element in the **set**.
-If the next element is **none**, the end of the **set** has been reached.
+An **iterator** has a property, **next**, that fetches the next element in the **seq**.
+If the next element is **none**, the end of the **seq** has been reached.
 
         ( elements next else [ stop ] )
 
@@ -409,7 +382,7 @@ If the iterator is depleted, the closest **loop** is stopped.
 Join
 ----
 
-**set** objects have a **join** method.
+**seq** objects have a **join** method.
 It takes a separator **string** as an argument and produces a **string**.
 
         (: 1 2 3 join ':' )
@@ -455,13 +428,12 @@ In order to have properly named parameters one can use **param**.
         ( param (: (: 'a' ( number ) ) (: 'b' ( number ) ) ) )
 
 yields a type that will match a tuple of two numbers and yield an object with properties **a** and **b** referencing the respective numbers.
-**param** takes a **set** as a parameter. In the example, this **set** is a **tuple**.
-The **set** contains tuples that conform to the following type:
+**param** takes a **tuple** as a parameter.
+The **tuple** contains tuples that conform to the following type:
 
         ( param (: (: 'name' ( string ) ) (: 'type' ( type ) ) ) )
 
-In other words, the tuples in the parameter **set** given to **param** has a **string** and a **type**.
-*__param__ is the most complicated concept present in Nominine. It does not get more complicated than this*
+In other words, the tuples in the parameter **tuple** given to **param** has a **string** and a **type**.
 
         defun (: 'average' ( param (: (: 'a' ( number ) ) (: 'b' ( number ) ) ) ) [
           that a + ( that b ) / 2
