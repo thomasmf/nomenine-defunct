@@ -88,7 +88,7 @@ inline REFERENCE refNEW( TYPE c, ANY x ) {
 
 inline ANY type_error( TYPE c, ANY o, n_string f, n_integer l ) {
   if ( any(c->instance_objective) != any(o->objective) ) {
-    printf( "System error in file '%s' at line %d. Object %s is of incorrect type.\n", f, l, DEBUG( o ) ) ;
+    printf( "System error in file '%s' at line %zd. Object %s is of incorrect type.\n", f, l, DEBUG( o ) ) ;
     exit( 1 ) ;
   }
   return ( o ) ;
@@ -96,7 +96,7 @@ inline ANY type_error( TYPE c, ANY o, n_string f, n_integer l ) {
 
 inline void error( n_string m, n_boolean v, n_string f, n_integer l ) {
   if ( !v ) {
-    printf( "System error in file '%s' at line %d: %s\n", f, l, m ) ;
+    printf( "System error in file '%s' at line %zd: %s\n", f, l, m ) ;
     exit( 1 ) ;
   }
 }

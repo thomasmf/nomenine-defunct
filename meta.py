@@ -71,7 +71,7 @@ def BUILD() :
     '\n#undef THIS' +
     '\nn_string debug' + c.name + '( ANY o ) {' +
     '\n  char * s ;' +
-    '\n  asprintf( &s, "[%04x:%s' + c.debug.f + ']", c( n_integer, o ) >> 4 & 0xfff, "' + c.name + '"' +
+    '\n  asprintf( &s, "[%04zx:%s' + c.debug.f + ']", c( size_t, o ) >> 4 & 0xfff, "' + c.name + '"' +
     ( ''.join( [
       ', ' + d
     for d in c.debug.d ] ) ) + ' ) ;' +
