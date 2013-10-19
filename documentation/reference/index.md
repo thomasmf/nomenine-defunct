@@ -5,6 +5,6 @@ layout: reference
 Reference
 =========
 
-This section contains of all types and the functionallity they provide.
+This section contains information on most types of objects and the functionallity they provide.
 
 

@@ -2,7 +2,7 @@
   <div class="nom-post">
     <div class="nom-post-header" >
       <span class="nom-post-date" >{{ post.date | date:"%Y-%m-%d" }}</span>
-      <span class="nom-post-title" >{{ post.title }}</span>
+      <span class="nom-post-title" ><h1>{{ post.title }}</h1></span>
     </div>
     <div>
       {{ post.content }}

@@ -35,12 +35,3 @@ This defines a function 'sort' which can be used to sort a list:
 
 Will output a sorted list to console.
 
-<div class="nom-posts">
-  {% for post in site.posts limit 5 %}
-    {% include post.html-fragment %}
-  {% endfor %}
-</div>
-
-
-
-

@@ -72,8 +72,10 @@ En
         ( some-object en )
 
 creates an object which has state equal to **some-object** and can be used to create static dependencies.
-In a traditional programming language, this would amount to creating a reference to an object.
-Notice that **some-object** is cloned during this process so the original object remain independent.
+
+*Related turorial: [static dependencies](/documentation/tutorial/statics.html)*
+
+*Related blog post: [programming with equations](/2013/10/06/programming_with_equations.html)*
 
 <hr>
 
@@ -83,6 +85,8 @@ Em
 
 creates an object which has an _initial state_ equal to **some-object** and can be used to create static dependencies.
 **...** is the definition of the new object.
-Notice that **some-object** is cloned during this process so the original object remain independent.
 
+*Related turorial: [static dependencies](/documentation/tutorial/statics.html)*
+
+*Related blog post: [programming with equations](/2013/10/06/programming_with_equations.html)*
 

@@ -14,6 +14,7 @@ This tutorial is a work in progress.
   <li><a href="/documentation/tutorial/functions.html">4. Functions</a></li>
   <li><a href="/documentation/tutorial/sequences.html">5. Sequences</a></li>
   <li><a href="/documentation/tutorial/types.html">6. Types</a></li>
-  <li><a href="/documentation/tutorial/debug.html">7. Debugging</a></li>
+  <li><a href="/documentation/tutorial/statics.html">7. Static dependencies</a></li>
+  <li><a href="/documentation/tutorial/debug.html">8. Debugging</a></li>
 </ul>
 

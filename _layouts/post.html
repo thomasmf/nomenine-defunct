@@ -9,7 +9,13 @@
 
     {% include top-bar.html-fragment %}
 
-    {{ content }}
+    <div id="nom-content" class="nom-bordered nom-shadowed">
+      <div class="nom-post-header" >
+        <span class="nom-post-date" >{{ page.date | date:"%Y-%m-%d" }}</span>
+        <span class="nom-post-title" ><h1>{{ page.title }}</h1></span>
+      </div>
+      {{ content }}
+    </div>
 
     {% include signature.html-fragment %}
 

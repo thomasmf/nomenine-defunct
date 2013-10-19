@@ -1,5 +1,11 @@
 
 
+
+h1, h2, h3, h4, h5 {
+  margin-top: 32px ;
+  margin-bottom: 8px ;
+}
+
 html {
   overflow-y: scroll ;
   overflow-x: auto ;
@@ -41,7 +47,6 @@ body {
 }
 
 .nom-post-title {
-  font-size: 24px ;
   margin: 0px 10px 0px ;
 }
 
